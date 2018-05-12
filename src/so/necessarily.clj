@@ -27,6 +27,9 @@
   (let [total (->> weights vals (reduce +))]
     (choose-with (rand total) (seq weights))))
 
+(defn continuous [history]
+  (rand 7))
+
 (def freqs ; major, p148
   {do 12000
    di 100
@@ -87,6 +90,7 @@
     (times 2)))
 
 (comment
+  (live/play (melody-with continuous))
   (live/play (melody-with random))
   (live/play (melody-with weighted))
   (live/play (melody-with weighted-succession))
