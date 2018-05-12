@@ -17,6 +17,14 @@
    6 0.0
    7 0.05})
 
+(def second-order
+  {-1 {0  1.0}
+   0  {-1 0.5, 1 0.5}
+   1  {0  0.5, 2 0.5}
+   2  {1  0.5, 3 0.5}
+   3  {2  0.5, 4 0.5}
+   4  {3  1.0}})
+
 (defn choose-with [choice [[value probability] & weights]]
   (if (< choice probability)
     value
@@ -34,11 +42,30 @@
     (where :pitch (comp A minor))
     (times 2)))
 
+(defn situate [pitches]
+  (->>
+    pitches
+    (take 16)
+    (phrase (repeat 1/4))
+    (where :pitch (comp A minor))
+    (times 2)))
+
 (def unigram (ngram #(select-from first-order)))
 
 (comment
   (live/play unigram)
+  (live/play bigram)
   )
+
+(defn bigram* [prev]
+  (let [next (select-from (second-order prev))]
+    (->>
+      (bigram* next)
+      lazy-seq
+      (cons next))))
+
+(def bigram
+  (situate (bigram* 0)))
 
 (definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
   (-> (sin-osc freq)
