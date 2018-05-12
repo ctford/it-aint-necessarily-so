@@ -60,6 +60,19 @@
 (defn weighted-succession [[previous & history]]
   (select-from (tendencies previous)))
 
+(def steps
+  {-1 {0  1.00000}
+   do {            re 1.00000}
+   re {do 0.50000, mi 0.50000}
+   mi {re 0.50000, fa 0.50000}
+   fa {mi 0.50000, so 0.50000}
+   so {fa 0.50000, la 0.50000}
+   la {so 0.50000, ti 0.50000}
+   ti {la 1.00000}})
+
+(defn stepwise [[previous & history]]
+  (select-from (steps previous)))
+
 (defn generate [generator history]
   (let [pitch (generator history)
         updated-history (cons pitch history) ]
@@ -76,7 +89,8 @@
 (comment
   (live/play (melody-with random))
   (live/play (melody-with weighted))
-  (live/play (melody-with weighted-succession)))
+  (live/play (melody-with weighted-succession))
+  (live/play (melody-with stepwise)))
 
 (definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
   (-> (sin-osc freq)
