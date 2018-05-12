@@ -7,6 +7,16 @@
 
 (def melody (phrase (repeat 1) (range 0 8) ))
 
+(def zeroth-order
+  {0 1
+   1 1
+   2 1
+   3 1
+   4 1
+   5 1
+   6 1
+   7 1})
+
 (def first-order
   {0 0.15
    1 0.05
@@ -34,14 +44,6 @@
   (let [total (->> weights vals (reduce +))]
     (choose-with (rand total) (seq weights))))
 
-(defn ngram [generate]
-  (->>
-    (repeatedly generate)
-    (take 16)
-    (phrase (repeat 1/4))
-    (where :pitch (comp A minor))
-    (times 2)))
-
 (defn situate [pitches]
   (->>
     pitches
@@ -50,9 +52,17 @@
     (where :pitch (comp A minor))
     (times 2)))
 
+(defn ngram [generate]
+  (->>
+    (repeatedly generate)
+    situate))
+
 (def unigram (ngram #(select-from first-order)))
 
+(def nullogram (ngram #(select-from zeroth-order)))
+
 (comment
+  (live/play nullogram)
   (live/play unigram)
   (live/play bigram)
   )
