@@ -7,13 +7,37 @@
 
 (def melody (phrase (repeat 1) (range 0 8) ))
 
-(def piece
-  (->> melody
-       (where :time (bpm 90))
-       (where :pitch (comp A minor))))
+(def first-order
+  {0 0.15
+   1 0.05
+   2 0.25
+   3 0.15
+   4 0.25
+   5 0.1
+   6 0.0
+   7 0.05})
+
+(defn choose-with [choice [[value probability] & weights]]
+  (if (< choice probability)
+    value
+    (choose-with (- choice probability) weights)))
+
+(defn select-from [weights]
+  (let [total (->> weights vals (reduce +))]
+    (choose-with (rand total) (seq weights))))
+
+(defn ngram [generate]
+  (->>
+    (repeatedly generate)
+    (take 16)
+    (phrase (repeat 1/4))
+    (where :pitch (comp A minor))
+    (times 2)))
+
+(def unigram (ngram #(select-from first-order)))
 
 (comment
-  (live/play piece)
+  (live/play unigram)
   )
 
 (definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
