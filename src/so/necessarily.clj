@@ -1,7 +1,7 @@
 (ns so.necessarily
   (:require [overtone.live :refer :all :exclude [stop scale]]
             [leipzig.melody :refer :all]
-            [leipzig.scale :refer [A C minor major scale high low from]]
+            [leipzig.scale :refer [A E C minor major scale high low from]]
             [leipzig.live :as live]
             [leipzig.live :refer [stop]]))
 
@@ -47,26 +47,28 @@
    li 150
    ti 4000})
 
-(defn random-pitch [history]
-  (rand-nth (keys freqs)))
-
 (defn weighted-pitch [history]
   (select-from freqs))
 
-(def tendencies ; major, p158
-  {do {do 0.03416, re 0.02806, mi 0.01974, fa 0.00210, so 0.01321, la 0.00839, ti 0.02321}
-   re {do 0.04190, re 0.02632, mi 0.03282, fa 0.00678, so 0.00825, la 0.00201, ti 0.00586}
-   mi {do 0.01555, re 0.04865, mi 0.03142, fa 0.02644, so 0.02365, la 0.00281, ti 0.00029}
-   fa {do 0.00054, re 0.01260, mi 0.04127, fa 0.01506, so 0.01712, la 0.00441, ti 0.00125}
-   so {do 0.02557, re 0.00530, mi 0.02854, fa 0.03653, so 0.04835, la 0.02076, ti 0.00369}
-   la {do 0.00238, re 0.00168, mi 0.00065, fa 0.00342, so 0.03642, la 0.01261, ti 0.00854}
-   ti {do 0.02025, re 0.00510, mi 0.00035, fa 0.00029, so 0.00323, la 0.01327, ti 0.00448}})
+(def pitch-tendencies ; major, p158-159.
+  {do {do 0.03416, di 0.00008, re 0.02806, ri 0.00022, mi 0.01974, fa 0.00210,             so 0.01321,             la 0.00839,             ti 0.02321}
+   di {do 0.00002, di 0.00004, re 0.00021,             mi 0.00003,                                                 la 0.00002,             ti 0.00002}
+   re {do 0.04190, di 0.00033  re 0.02632, ri 0.00069, mi 0.03282, fa 0.00678,             so 0.00825,             la 0.00201,             ti 0.00586}
+   ri {do 0.00015,             re 0.00054,             mi 0.00010, fa 0.00036,             so 0.00005                                                }
+   mi {do 0.01555,             re 0.04865,             mi 0.03142, fa 0.02644,             so 0.02365,             la 0.00281,             ti 0.00029}
+   fa {do 0.00054,             re 0.01260,             mi 0.04127, fa 0.01506,             so 0.01712,             la 0.00441,             ti 0.00125}
+   fi {do 0.00003              re 0.00016              mi 0.00037, fa 0.00010, fi 0.00040, so 0.00257, si 0.00002, la 0.00040,             ti 0.00003}
+   so {do 0.02557,             re 0.00530,             mi 0.02854, fa 0.03653,             so 0.04835,             la 0.02076,             ti 0.00369}
+   si {do 0.00001,                                     mi 0.00001  fa 0.00002  fi 0.00001, so 0.00011, si 0.00002  la 0.00014,             ti 0.00002}
+   la {do 0.00238,             re 0.00168,             mi 0.00065, fa 0.00342,             so 0.03642,             la 0.01261,             ti 0.00854}
+   li {do 0.00062,             re 0.00003, ri 0.00008, mi 0.00001, fa 0.00003,             so 0.00043,             la 0.00119, li 0.00048            }
+   ti {do 0.02025,             re 0.00510,             mi 0.00035, fa 0.00029,             so 0.00323,             la 0.01327,             ti 0.00448}})
 
 (defn pitch-succession [[previous & history]]
-  (select-from (tendencies previous)))
+  (select-from (pitch-tendencies previous)))
 
 (defn constant-duration [history]
-  1/2)
+  1)
 
 (def metric-affinity
   {1/8  {1/8 0.875,  1/4 0.125}
@@ -107,30 +109,37 @@
 
 (defn melody-with [pitch-generator duration-generator]
   (->>
-    (generate pitch-generator [(rand-nth (keys tendencies))])
+    (generate pitch-generator [(select-from freqs)])
     (phrase (generate duration-generator [1/4 15/4]))
-    (take-while #(-> % :time (< 8)))
+    (take-while #(<= (+ (:time %) (:duration %)) 8))
     (times 2)
-    (then (phrase [1] [do]))
-    (where :pitch (comp C major))
+    (then (phrase [2] [do]))
+    (where :pitch (comp high E major))
+    stress
     (tempo (bpm 90))))
+
+(defn stress [notes]
+  (map
+    (fn [{:keys [time] :as note}]
+      (if (zero? (mod time 2)) (assoc note :stressed true) note))
+    notes))
 
 (comment
   (live/play (melody-with arbitrary-pitch  arbitrary-duration))
   (live/play (melody-with weighted-pitch   constant-duration))
   (live/play (melody-with pitch-succession metric-context)))
 
-(definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
-  (-> (sin-osc freq)
-      (+ (* 1/3 (sin-osc (* 2.01 freq))))
-      (+ (* 1/2 (sin-osc (* 3.01 freq))))
-      (+ (* 1/8 (sin-osc (* 5.01 freq))))
-      (+ (* 2 (sin-osc (* 0.5 freq))))
-      (clip2 0.7)
-      (lpf top)
-      (hpf 20)
-      (* (env-gen (adsr 0.01 0.2 0.8 0.2) (line:kr 1 0 dur) :action FREE))
-      (* vol)))
+(definst bell [freq 440 dur 4 vol 0.25]
+  (let [harmonic-series [1.0 2.0 3.0 4.2 5.3]
+        proportions     [1.0 0.6 0.4 0.2 0.1]
+        component
+         (fn [harmonic proportion]
+           (* 1/2 vol proportion
+              (env-gen (perc 0.001 (* proportion dur)))
+              (sin-osc (* harmonic freq))))
+        whole (mix (map component harmonic-series proportions))]
+    (detect-silence whole :action FREE)
+    whole))
 
-(defmethod live/play-note :default [{:keys [pitch duration]}]
-  (overchauffeur :freq (midi->hz pitch) :dur duration))
+(defmethod live/play-note :default [{:keys [pitch duration stressed]}]
+  (bell :freq (midi->hz pitch) :vol (if stressed 0.45 0.25)))
