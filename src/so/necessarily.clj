@@ -16,7 +16,7 @@
   (def si 4.5)
 (def la 5)
   (def li 5.5)
-(def ti 6)
+(def ti -1)
 
 (defn choose-with [choice [[value probability] & weights]]
   (if (< choice probability)
@@ -27,7 +27,7 @@
   (let [total (->> weights vals (reduce +))]
     (choose-with (rand total) (seq weights))))
 
-(defn continuous [history]
+(defn continuous-pitch [history]
   (rand 7))
 
 (defn continuous-duration [history]
@@ -47,15 +47,14 @@
    li 150
    ti 4000})
 
-(defn random [history]
+(defn random-pitch [history]
   (rand-nth (keys freqs)))
 
-(defn weighted [history]
+(defn weighted-pitch [history]
   (select-from freqs))
 
 (def tendencies ; major, p158
-  {-1 {0 1.00000}
-   do {do 0.03416, re 0.02806, mi 0.01974, fa 0.00210, so 0.01321, la 0.00839, ti 0.02321}
+  {do {do 0.03416, re 0.02806, mi 0.01974, fa 0.00210, so 0.01321, la 0.00839, ti 0.02321}
    re {do 0.04190, re 0.02632, mi 0.03282, fa 0.00678, so 0.00825, la 0.00201, ti 0.00586}
    mi {do 0.01555, re 0.04865, mi 0.03142, fa 0.02644, so 0.02365, la 0.00281, ti 0.00029}
    fa {do 0.00054, re 0.01260, mi 0.04127, fa 0.01506, so 0.01712, la 0.00441, ti 0.00125}
@@ -66,24 +65,17 @@
 (defn weighted-succession [[previous & history]]
   (select-from (tendencies previous)))
 
-(def steps
-  {do {            re 1.00000}
-   re {do 0.50000, mi 0.50000}
-   mi {re 0.50000, fa 0.50000}
-   fa {mi 0.50000, so 0.50000}
-   so {fa 0.50000, la 0.50000}
-   la {so 0.50000, ti 0.50000}
-   ti {la 1.00000}})
-
-(defn stepwise [[previous & history]]
-  (select-from (steps previous)))
-
-(defn constant [history]
+(defn constant-duration [history]
   1/4)
 
-(defn sticky [[previous & history]]
-  (let [factor (select-from {1/2 0.125, 1 0.75, 2 0.125})]
-   (max 1/16 (* factor previous))))
+(def metric-affinity
+  {1/8  {1/8 0.875,  1/4 0.125}
+   1/4  {1/8  0.125, 1/4 0.75,  1/2 0.125}
+   1/2  {1/4  0.125, 1/2 0.75,  1   0.125}
+   1    {1/4  0.125, 1/2 0.125, 1   0.75 }})
+
+(defn metric-inertia [[previous & history]]
+  (select-from (metric-affinity previous)))
 
 (def metric-tendencies ; p243
   {0/4  {1/4 2, 2/4 600, 3/4 144, 4/4 2680, 6/4 1219, 8/4 1491,           12/4 125,                       16/4 36  }
@@ -98,8 +90,7 @@
    10/4 {                                                                 12/4 917,  14/4 7,                       }
    12/4 {                                                                            14/4 1804, 15/4 227, 16/4 2924}
    14/4 {                                                                                       15/4 50,  16/4 2147}
-   15/4 {                                                                                                 16/4 277 }
-   })
+   15/4 {                                                                                                 16/4 277 }})
 
 (defn metric-succession [[previous & history]]
   (let [time (reduce + previous history)
@@ -113,20 +104,17 @@
 
 (defn melody-with [pitch-generator duration-generator]
   (->>
-    (generate pitch-generator [(rand-nth (keys steps))])
+    (generate pitch-generator [(rand-nth (keys tendencies))])
     (phrase (generate duration-generator [1/4 15/4]))
-    (where :pitch (comp A major))
     (take-while #(-> % :time (< 8)))
-    (times 2)))
+    (times 2)
+    (then (phrase [1] [do]))
+    (where :pitch (comp A major))))
 
 (comment
-  (live/play (melody-with continuous continuous-duration))
-  (live/play (melody-with random constant))
-  (live/play (melody-with weighted constant))
-  (live/play (melody-with weighted-succession constant))
-  (live/play (melody-with stepwise constant))
-  (live/play (melody-with weighted-succession sticky))
-  (live/play (melody-with stepwise sticky))
+  (live/play (melody-with continuous-pitch    continuous-duration))
+  (live/play (melody-with random-pitch        constant-duration))
+  (live/play (melody-with weighted-pitch      metric-inertia))
   (live/play (melody-with weighted-succession metric-succession)))
 
 (definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
