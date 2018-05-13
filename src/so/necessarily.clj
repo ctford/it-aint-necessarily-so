@@ -30,6 +30,9 @@
 (defn continuous [history]
   (rand 7))
 
+(defn continuous-duration [history]
+  (max 1/16 (rand 1)))
+
 (def freqs ; major, p148
   {do 12000
    di 100
@@ -117,7 +120,7 @@
     (times 2)))
 
 (comment
-  (live/play (melody-with continuous constant))
+  (live/play (melody-with continuous continuous-duration))
   (live/play (melody-with random constant))
   (live/play (melody-with weighted constant))
   (live/play (melody-with weighted-succession constant))
