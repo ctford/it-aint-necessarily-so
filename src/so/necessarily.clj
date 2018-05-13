@@ -27,10 +27,10 @@
   (let [total (->> weights vals (reduce +))]
     (choose-with (rand total) (seq weights))))
 
-(defn continuous-pitch [history]
+(defn arbitrary-pitch [history]
   (rand 7))
 
-(defn continuous-duration [history]
+(defn arbitrary-duration [history]
   (max 1/16 (rand 1)))
 
 (def freqs ; major, p148
@@ -62,7 +62,7 @@
    la {do 0.00238, re 0.00168, mi 0.00065, fa 0.00342, so 0.03642, la 0.01261, ti 0.00854}
    ti {do 0.02025, re 0.00510, mi 0.00035, fa 0.00029, so 0.00323, la 0.01327, ti 0.00448}})
 
-(defn weighted-succession [[previous & history]]
+(defn pitch-succession [[previous & history]]
   (select-from (tendencies previous)))
 
 (defn constant-duration [history]
@@ -112,10 +112,10 @@
     (where :pitch (comp A major))))
 
 (comment
-  (live/play (melody-with continuous-pitch    continuous-duration))
-  (live/play (melody-with random-pitch        constant-duration))
-  (live/play (melody-with weighted-pitch      metric-inertia))
-  (live/play (melody-with weighted-succession metric-succession)))
+  (live/play (melody-with arbitrary-pitch  arbitrary-duration))
+  (live/play (melody-with random-pitch     constant-duration))
+  (live/play (melody-with weighted-pitch   metric-inertia))
+  (live/play (melody-with pitch-succession metric-succession)))
 
 (definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
   (-> (sin-osc freq)
