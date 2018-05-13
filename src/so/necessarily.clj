@@ -34,18 +34,18 @@
   (max 1/16 (rand 1)))
 
 (def freqs ; major, p148
-  {do  12000
-   do# 100
-   re  10000
-   re# 100
-   mi  1400
-   fa  8000
-   fa# 150
-   so  15000
-   so# 100
-   la  6000
-   la# 150
-   ti  4000})
+  {do  17.2
+   do#  0.1
+   re  14.4
+   re#  0.1
+   mi  20.1
+   fa  11.5
+   fa#  0.2
+   so  21.6
+   so#  0.1
+   la   8.6
+   la#  0.2
+   ti   5.7})
 
 (defn weighted-pitch [history]
   (select-from freqs))
