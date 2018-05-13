@@ -66,7 +66,7 @@
   (select-from (tendencies previous)))
 
 (defn constant-duration [history]
-  1/4)
+  1/2)
 
 (def metric-affinity
   {1/8  {1/8 0.875,  1/4 0.125}
@@ -78,21 +78,24 @@
   (select-from (metric-affinity previous)))
 
 (def metric-tendencies ; p243
-  {0/4  {1/4 2, 2/4 600, 3/4 144, 4/4 2680, 6/4 1219, 8/4 1491,           12/4 125,                       16/4 36  }
-   1/4  {       2/4 2                                                                                              }
-   2/4  {                         4/4 589,  6/4 6,                                                        16/4 2   }
-   3/4  {                         4/4 147   6/4 2                                                                  }
-   4/4  {                                   6/4 760,  8/4 2379, 10/4 48,  12/4 77,                        16/4 4   }
-   5/4  {                                   6/4 4                                                                  }
-   6/4  {                                             8/4 1969, 10/4 3,                                            }
-   7/4  {                                             8/4 135                                                      }
-   8/4  {                                                       10/4 880, 12/4 3720, 14/4 367,            16/4 457 }
-   10/4 {                                                                 12/4 917,  14/4 7,                       }
-   12/4 {                                                                            14/4 1804, 15/4 227, 16/4 2924}
-   14/4 {                                                                                       15/4 50,  16/4 2147}
-   15/4 {                                                                                                 16/4 277 }})
+  {0/4  {1/4 2, 2/4 600, 3/4 144, 4/4 2680,       6/4 1219,         8/4 1491,                             12/4 125,                                16/4 36  }
+   1/4  {       2/4 2,   3/4 5                                                                                                                              }
+   2/4  {                         4/4 589,        6/4 6,                                                                                           16/4 2   }
+   3/4  {                         4/4 147,        6/4 2                                                                                                     }
+   4/4  {                                  5/4 4, 6/4 760, 7/4 117, 8/4 2379,         10/4 48,            12/4 77,                                 16/4 4   }
+   5/4  {                                         6/4 4                                                                                                     }
+   6/4  {                                                  7/4 18,  8/4 1969,         10/4 3                                                                }
+   7/4  {                                                           8/4 135                                                                                 }
+   8/4  {                                                                     9/4 10, 10/4 880, 11/4 166, 12/4 3720,          14/4 367,            16/4 457 }
+   9/4  {                                                                             10/4 7              12/4 3                                            }
+   10/4 {                                                                                       11/4 13,  12/4 917,           14/4 7                        }
+   11/4 {                                                                                                 12/4 179                                          }
+   12/4 {                                                                                                            13/4 26, 14/4 1804, 15/4 227, 16/4 2924}
+   13/4 {                                                                                                                     14/4 23,             16/4 3   }
+   14/4 {                                                                                                                                15/4 50,  16/4 2147}
+   15/4 {                                                                                                                                          16/4 277 }})
 
-(defn metric-succession [[previous & history]]
+(defn metric-context [[previous & history]]
   (let [time (reduce + previous history)
         position (mod time 16/4)]
     (- (select-from (metric-tendencies position)) position)))
@@ -109,13 +112,13 @@
     (take-while #(-> % :time (< 8)))
     (times 2)
     (then (phrase [1] [do]))
-    (where :pitch (comp A major))))
+    (where :pitch (comp C major))
+    (tempo (bpm 90))))
 
 (comment
   (live/play (melody-with arbitrary-pitch  arbitrary-duration))
-  (live/play (melody-with random-pitch     constant-duration))
-  (live/play (melody-with weighted-pitch   metric-inertia))
-  (live/play (melody-with pitch-succession metric-succession)))
+  (live/play (melody-with weighted-pitch   constant-duration))
+  (live/play (melody-with pitch-succession metric-context)))
 
 (definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
   (-> (sin-osc freq)
