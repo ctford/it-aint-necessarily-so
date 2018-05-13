@@ -80,7 +80,7 @@
 
 (defn sticky [[previous & history]]
   (let [factor (select-from {1/2 0.125, 1 0.75, 2 0.125})]
-   (* factor previous)))
+   (max 1/16 (* factor previous))))
 
 (def metric-tendencies ; p243
   {0/4  {1/4 2, 2/4 600, 3/4 144, 4/4 2680, 6/4 1219, 8/4 1491,           12/4 125,                       16/4 36  }
