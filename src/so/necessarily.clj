@@ -16,7 +16,7 @@
   (def si 4.5)
 (def la 5)
   (def li 5.5)
-(def te 6)
+(def ti 6)
 
 (defn choose-with [choice [[value probability] & weights]]
   (if (< choice probability)
@@ -76,25 +76,51 @@
 (defn stepwise [[previous & history]]
   (select-from (steps previous)))
 
+(defn constant [history]
+  1/4)
+
+(defn sticky [[previous & history]]
+  (let [factor (select-from {1/2 0.125, 1 0.75, 2 0.125})]
+   (* factor previous)))
+
+(def metric-tendencies ; p243
+  {0/4  {2/4 600, 4/4 2680, 6/4 1219, 8/4 1491, 10/4 0,   12/4 125,  14/4 0,    16/4 36}
+   2/4  {2/4 0,   4/4 589,  6/4 6,    8/4 0,    10/4 0,   12/4 0,    14/4 0,    16/4 2}
+   4/4  {2/4 0,   4/4 0,    6/4 760,  8/4 2379, 10/4 48,  12/4 77,   14/4 0,    16/4 4}
+   6/4  {2/4 0,   4/4 0,    6/4 0,    8/4 1969, 10/4 3,   12/4 0,    14/4 0,    16/4 0}
+   8/4  {2/4 0,   4/4 0,    6/4 0,    8/4 0,    10/4 880, 12/4 3720, 14/4 367,  16/4 457}
+   10/4 {2/4 0,   4/4 0,    6/4 0,    8/4 0,    10/4 0,   12/4 917,  14/4 7,    16/4 0}
+   12/4 {                                                            14/4 1804, 16/4 2924}
+   14/4 {                                                                       16/4 2147}
+   })
+
+(defn metric-succession [[previous & history]]
+  (let [time (reduce + previous history)
+        position (mod time 16/4)]
+    (- (select-from (metric-tendencies position)) position)))
+
 (defn generate [generator history]
   (let [pitch (generator history)
         updated-history (cons pitch history) ]
     (cons pitch (lazy-seq (generate generator updated-history)))))
 
-(defn melody-with [generator]
+(defn melody-with [pitch-generator duration-generator]
   (->>
-    (generate generator [-1])
-    (take 16)
-    (phrase (repeat 1/4))
+    (generate pitch-generator [-1])
+    (phrase (generate duration-generator [1/4 15/4]))
     (where :pitch (comp A major))
+    (take-while #(-> % :time (< 8)))
     (times 2)))
 
 (comment
-  (live/play (melody-with continuous))
-  (live/play (melody-with random))
-  (live/play (melody-with weighted))
-  (live/play (melody-with weighted-succession))
-  (live/play (melody-with stepwise)))
+  (live/play (melody-with continuous constant))
+  (live/play (melody-with random constant))
+  (live/play (melody-with weighted constant))
+  (live/play (melody-with weighted-succession constant))
+  (live/play (melody-with stepwise constant))
+  (live/play (melody-with weighted-succession sticky))
+  (live/play (melody-with stepwise sticky))
+  (live/play (melody-with weighted-succession metric-succession)))
 
 (definst overchauffeur [freq 110 dur 1.0 top 2500 vol 0.25]
   (-> (sin-osc freq)
