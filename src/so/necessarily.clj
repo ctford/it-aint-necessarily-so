@@ -98,6 +98,12 @@
         updated-history (cons pitch history) ]
     (cons pitch (lazy-seq (generate generator updated-history)))))
 
+(defn stress [notes]
+  (map
+    (fn [{:keys [time] :as note}]
+      (if (zero? (mod time 2)) (assoc note :stressed true) note))
+    notes))
+
 (defn melody-with [pitch-generator duration-generator]
   (->>
     (generate pitch-generator [(select-from freqs)])
@@ -108,12 +114,6 @@
     (where :pitch (comp high E major))
     stress
     (tempo (bpm 90))))
-
-(defn stress [notes]
-  (map
-    (fn [{:keys [time] :as note}]
-      (if (zero? (mod time 2)) (assoc note :stressed true) note))
-    notes))
 
 (comment
   (live/play (melody-with arbitrary-pitch  arbitrary-duration))
