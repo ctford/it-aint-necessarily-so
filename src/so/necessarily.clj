@@ -1,5 +1,6 @@
 (ns so.necessarily
   (:require [overtone.live :refer :all :exclude [stop scale sample]]
+            [clojure.pprint :refer [pp pprint]]
             [leipzig.melody :refer :all]
             [leipzig.scale :refer [A E C minor major scale high low from]]
             [leipzig.live :as live]
@@ -32,23 +33,6 @@
 
 (defn arbitrary-duration [history]
   (+ 1/4 (rand 7/8)))
-
-(def pitch-freqs ; major, p148
-  {do  17.2
-   do#  0.1
-   re  14.4
-   re#  0.1
-   mi  20.1
-   fa  11.5
-   fa#  0.2
-   so  21.6
-   so#  0.1
-   la   8.6
-   la#  0.2
-   ti   5.7})
-
-(defn weighted-pitch [history]
-  (select-from pitch-freqs))
 
 (def pitch-tendencies ; major, p158-159.
   {do  {do 0.03416, do# 0.00008, re 0.02806, re# 0.00022, mi 0.01974, fa 0.00210, fa# 0.00013  so 0.01321,              la 0.00839,              ti 0.02321}
@@ -110,6 +94,9 @@
 
 (defonce pitch-sample  (sample contextual-pitch [-1]))
 (defonce metric-sample (sample contextual-duration [15/4 1/4]))
+
+(defn weighted-pitch [history]
+  (select-from pitch-sample))
 
 (defn weighted-duration [history]
   (select-from metric-sample))
