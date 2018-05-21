@@ -1,5 +1,5 @@
 (ns so.necessarily
-  (:require [overtone.live :refer :all :exclude [stop scale]]
+  (:require [overtone.live :refer :all :exclude [stop scale sample]]
             [leipzig.melody :refer :all]
             [leipzig.scale :refer [A E C minor major scale high low from]]
             [leipzig.live :as live]
@@ -31,9 +31,9 @@
   (rand 7))
 
 (defn arbitrary-duration [history]
-  (max 1/16 (rand 1)))
+  (+ 1/4 (rand 7/8)))
 
-(def freqs ; major, p148
+(def pitch-freqs ; major, p148
   {do  17.2
    do#  0.1
    re  14.4
@@ -48,7 +48,7 @@
    ti   5.7})
 
 (defn weighted-pitch [history]
-  (select-from freqs))
+  (select-from pitch-freqs))
 
 (def pitch-tendencies ; major, p158-159.
   {do  {do 0.03416, do# 0.00008, re 0.02806, re# 0.00022, mi 0.01974, fa 0.00210, fa# 0.00013  so 0.01321,              la 0.00839,              ti 0.02321}
@@ -64,11 +64,8 @@
    la# {do 0.00062,              re 0.00003, re# 0.00008, mi 0.00001, fa 0.00003,              so 0.00043,              la 0.00119, la# 0.00048,           }
    ti  {do 0.02025,              re 0.00510,              mi 0.00035, fa 0.00029, fa# 0.00010, so 0.00323, so# 0.00006, la 0.01327, la# 0.00001, ti 0.00448}})
 
-(defn pitch-succession [[previous & history]]
+(defn contextual-pitch [[previous & history]]
   (select-from (pitch-tendencies previous)))
-
-(defn constant-duration [history]
-  1)
 
 (def metric-tendencies ; p243
   {0/4  {1/4 2, 2/4 600, 3/4 144, 4/4 2680,       6/4 1219,         8/4 1491,                             12/4 125,                                16/4 36  }
@@ -88,15 +85,15 @@
    14/4 {                                                                                                                                15/4 50,  16/4 2147}
    15/4 {                                                                                                                                          16/4 277 }})
 
-(defn metric-context [[previous & history]]
+(defn contextual-duration [[previous & history]]
   (let [time (reduce + previous history)
         position (mod time 16/4)]
     (- (select-from (metric-tendencies position)) position)))
 
 (defn generate [generator history]
-  (let [pitch (generator history)
-        updated-history (cons pitch history) ]
-    (cons pitch (lazy-seq (generate generator updated-history)))))
+  (let [value (generator history)
+        updated-history (cons value history) ]
+    (cons value (lazy-seq (generate generator updated-history)))))
 
 (defn stress [notes]
   (map
@@ -104,21 +101,40 @@
       (if (zero? (mod time 2)) (assoc note :stressed true) note))
     notes))
 
+(defn sample [generator history]
+  (->> (generate generator history)
+       (take 1000)
+       frequencies
+       (map #(update-in % [1] * 0.1))
+       (into {})))
+
+(defonce pitch-sample  (sample contextual-pitch [-1]))
+(defonce metric-sample (sample contextual-duration [15/4 1/4]))
+
+(defn weighted-duration [history]
+  (select-from metric-sample))
+
+(defn finish-with [ending notes]
+  (->> notes
+       (take-while #(<= (+ (:time %) (:duration %)) (- (duration notes) (duration ending))))
+       (then ending)))
+
 (defn melody-with [pitch-generator duration-generator]
   (->>
-    (generate pitch-generator [(select-from freqs)])
-    (phrase (generate duration-generator [1/4 15/4]))
+    (generate pitch-generator [(select-from pitch-sample)])
+    (phrase (generate duration-generator [15/4 1/4]))
     (take-while #(<= (+ (:time %) (:duration %)) 8))
     (times 2)
-    (then (phrase [2] [do]))
-    (where :pitch (comp high E major))
+    (finish-with (phrase [2] [do]))
+    (times 2)
     stress
+    (where :pitch (comp high E major))
     (tempo (bpm 90))))
 
 (comment
   (live/play (melody-with arbitrary-pitch  arbitrary-duration))
-  (live/play (melody-with weighted-pitch   constant-duration))
-  (live/play (melody-with pitch-succession metric-context)))
+  (live/play (melody-with weighted-pitch   weighted-duration))
+  (live/play (melody-with contextual-pitch contextual-duration)))
 
 (definst bell [freq 440 dur 4 vol 0.25]
   (let [harmonic-series [1.0 2.0 3.0 4.2 5.3]
