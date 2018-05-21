@@ -101,10 +101,12 @@
 (defn weighted-duration [history]
   (select-from metric-sample))
 
-(defn finish-with [ending notes]
-  (->> notes
-       (take-while #(<= (+ (:time %) (:duration %)) (- (duration notes) (duration ending))))
-       (then ending)))
+(defn with-closure [notes]
+  (let [anticipation (phrase [1/2 2] [re do])
+        anticipation-onset (- (duration notes) (duration anticipation))]
+    (->> notes
+       (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
+       (with (after anticipation-onset anticipation)))))
 
 (defn melody-with [pitch-generator duration-generator]
   (->>
@@ -112,8 +114,7 @@
     (phrase (generate duration-generator [15/4 1/4]))
     (take-while #(<= (+ (:time %) (:duration %)) 8))
     (times 2)
-    (finish-with (phrase [2] [do]))
-    (times 2)
+    with-closure
     stress
     (where :pitch (comp high E major))
     (tempo (bpm 90))))
