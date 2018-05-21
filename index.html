@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>It Ain't Necessarily So</title>
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/solarized.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                <section data-markdown>
+                    <script type="text/template">
+                        ## It Ain't Necessarily So
+
+                        [@ctford](https://twitter.com/ctford)/[ThoughtWorks](https://thoughtworks.com)
+
+                        [Code examples](https://github.com/ctford/it-aint-necessarily-so/blob/master/src/so/necessarily.clj)
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                    ## References
+                    * [Leipzig](https://github.com/ctford/leipzig) by Chris Ford.
+                    * [The Haskell School of Expression](http://www.cs.yale.edu/homes/hudak/SOE/) by Paul Hudak.
+                    * [Mezzo](https://github.com/DimaSamoz/mezzo) by Dima Samoz.
+                    * [Overtone](http://overtone.github.io/) by Sam Aaron and Jeff Rose.
+                    * [Sweet Anticipation](https://musiccog.ohio-state.edu/SweetAnticipation) by David Huron.
+                    </script>
+                </section>
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				history: true,
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
+				]
+			});
+		</script>
+	</body>
+</html>
+
