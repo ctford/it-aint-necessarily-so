@@ -2,26 +2,26 @@ module Entropy
 
 %default total
 
-data Surprise : Type -> Nat -> Type where
-  Occurred : a -> Surprise a n
+data Probability : Type -> Nat -> Type where
+    Occurred : a -> Probability a bits
 
-empty : Surprise (List Nat) 0
+empty : Probability (List Nat) 0
 empty = Occurred []
 
-so : Surprise (List Nat) 1
+so : Probability (List Nat) 1
 so = Occurred [4]
 
-re : Surprise (List Nat) 2
+re : Probability (List Nat) 2
 re = Occurred [1]
 
-and : Surprise (List Nat) n -> List Nat -> Surprise (List Nat) n
+and : Probability (List Nat) bits -> List Nat -> Probability (List Nat) bits
 and (Occurred xs) ys = Occurred (xs ++ ys)
 
-up : List Nat -> Surprise (List Nat) 1
+up : List Nat -> Probability (List Nat) 1
 up xs = Occurred (3 :: xs)
 
-(>>=) : Surprise a entropyA -> (a -> Surprise b entropyB) -> Surprise b (entropyA + entropyB)
+(>>=) : Probability a entropyA -> (a -> Probability b entropyB) -> Probability b (entropyA + entropyB)
 (Occurred a) >>= bGivenA = let (Occurred b) = bGivenA a in (Occurred b)
 
-run : Surprise (List Nat) 4
+run : Probability (List Nat) 4
 run = so >>= up >>= (and re)
