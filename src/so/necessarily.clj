@@ -6,31 +6,32 @@
             [leipzig.live :as live]
             [leipzig.live :refer [stop]]))
 
-(def do 0)
-  (def do# 0.5)
-(def re 1)
-  (def re# 1.5)
-(def mi 2)
-(def fa 3)
-  (def fa# 3.5)
-(def so 4)
-  (def so# 4.5)
-(def la 5)
-  (def la# 5.5)
-(def ti -1)
+(def solfege
+  {:do  0
+   :do# 0.5
+   :re  1
+   :re# 1.5
+   :mi  2
+   :fa  3
+   :fa# 3.5
+   :so  0
+   :so# 4.5
+   :la  5
+   :la# 5.5
+   :ti -1})
 
 (def pitch-probabilities
-  {do  19.5,
-   do#  0.1,
-   re  17.8,
-   re#  0.2,
-   mi  21.6,
-   fa  11.3,
-   fa# 0.70,
-   so  16.5,
-   la  7.30,
-   la#  0.2,
-   ti   4.8,})
+  {:do  19.5,
+   :do#  0.1,
+   :re  17.8,
+   :re#  0.2,
+   :mi  21.6,
+   :fa  11.3,
+   :fa# 0.70,
+   :so  16.5,
+   :la  7.30,
+   :la#  0.2,
+   :ti   4.8,})
 
 (defn generate
   [generator history]
@@ -39,13 +40,13 @@
     (cons value (lazy-seq (generate generator updated-history)))))
 
 (defn with-closure [notes]
-  (let [anticipation (phrase [1/2 2] [1 0])
+  (let [anticipation (phrase [1/2 2] [:re :do])
         anticipation-onset (- (duration notes) (duration anticipation))]
     (->> notes
        (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
        (with (after anticipation-onset anticipation)))))
 
-(defn stress [notes]
+(defn with-stress [notes]
   (map
     (fn [{:keys [time] :as note}]
       (if (zero? (mod time 2)) (assoc note :stressed true) note))
@@ -69,8 +70,8 @@
     (take-while #(<= (+ (:time %) (:duration %)) 8))
     (times 2)
     with-closure
-    stress
-    (where :pitch (comp high E major))
+    with-stress
+    (where :pitch (comp high E major solfege))
     (tempo (bpm 90))))
 
 
@@ -99,17 +100,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def pitch-probabilities
-  {do  19.5,
-   do#  0.1,
-   re  17.8,
-   re#  0.2,
-   mi  21.6,
-   fa  11.3,
-   fa# 0.70,
-   so  16.5,
-   la  7.30,
-   la#  0.2,
-   ti   4.8,})
+  {:do  19.5,
+   :do#  0.1,
+   :re  17.8,
+   :re#  0.2,
+   :mi  21.6,
+   :fa  11.3,
+   :fa# 0.70,
+   :so  16.5,
+   :la  7.30,
+   :la#  0.2,
+   :ti   4.8,})
 
 (def metric-probabilities
   {1/4  3.6,
@@ -143,18 +144,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def pitch-tendencies ; major, p158-159.
-  {do  {do 0.03416, do# 0.00008, re 0.02806, re# 0.00022, mi 0.01974, fa 0.00210, fa# 0.00013  so 0.01321,              la 0.00839,              ti 0.02321}
-   do# {do 0.00002, do# 0.00004, re 0.00021,              mi 0.00003,                                                   la 0.00002,              ti 0.00002}
-   re  {do 0.04190, do# 0.00033  re 0.02632, re# 0.00069, mi 0.03282, fa 0.00678,              so 0.00825,              la 0.00201,              ti 0.00586}
-   re# {do 0.00015,              re 0.00054,              mi 0.00010, fa 0.00036,              so 0.00005                                                  }
-   mi  {do 0.01555, do# 0.00004  re 0.04865, re# 0.00005  mi 0.03142, fa 0.02644, fa# 0.00088  so 0.02365, so# 0.00003, la 0.00281,              ti 0.00029}
-   fa  {do 0.00054, do# 0.00002  re 0.01260, re# 0.00084  mi 0.04127, fa 0.01506, fa# 0.00004  so 0.01712, so# 0.00003  la 0.00441, la# 0.00006  ti 0.00125}
-   fa# {do 0.00003               re 0.00016               mi 0.00037, fa 0.00010, fa# 0.00040, so 0.00257, so# 0.00002, la 0.00040,              ti 0.00003}
-   so  {do 0.02557, do# 0.00001  re 0.00530, re# 0.00037  mi 0.02854, fa 0.03653, fa# 0.00207, so 0.04835, so# 0.00019, la 0.02076, la# 0.00054, ti 0.00369}
-   so# {do 0.00001,                                       mi 0.00001  fa 0.00002  fa# 0.00001, so 0.00011, so# 0.00002, la 0.00014, la# 0.00003, ti 0.00002}
-   la  {do 0.00238, do# 0.00004, re 0.00168,              mi 0.00065, fa 0.00342, fa# 0.00037, so 0.03642, so# 0.00017, la 0.01261, la# 0.00070, ti 0.00854}
-   la# {do 0.00062,              re 0.00003, re# 0.00008, mi 0.00001, fa 0.00003,              so 0.00043,              la 0.00119, la# 0.00048,           }
-   ti  {do 0.02025,              re 0.00510,              mi 0.00035, fa 0.00029, fa# 0.00010, so 0.00323, so# 0.00006, la 0.01327, la# 0.00001, ti 0.00448}})
+  {:do  {:do 0.03416, :do# 0.00008, :re 0.02806, :re# 0.00022, :mi 0.01974, :fa 0.00210, :fa# 0.00013  :so 0.01321,              :la 0.00839,              :ti 0.02321}
+   :do# {:do 0.00002, :do# 0.00004, :re 0.00021,              :mi 0.00003,                                                   :la 0.00002,              :ti 0.00002}
+   :re  {:do 0.04190, :do# 0.00033  :re 0.02632, :re# 0.00069, :mi 0.03282, :fa 0.00678,              :so 0.00825,              :la 0.00201,              :ti 0.00586}
+   :re# {:do 0.00015,              :re 0.00054,              :mi 0.00010, :fa 0.00036,              :so 0.00005                                                  }
+   :mi  {:do 0.01555, :do# 0.00004  :re 0.04865, :re# 0.00005  :mi 0.03142, :fa 0.02644, :fa# 0.00088  :so 0.02365, :so# 0.00003, :la 0.00281,              :ti 0.00029}
+   :fa  {:do 0.00054, :do# 0.00002  :re 0.01260, :re# 0.00084  :mi 0.04127, :fa 0.01506, :fa# 0.00004  :so 0.01712, :so# 0.00003  :la 0.00441, :la# 0.00006  :ti 0.00125}
+   :fa# {:do 0.00003               :re 0.00016               :mi 0.00037, :fa 0.00010, :fa# 0.00040, :so 0.00257, :so# 0.00002, :la 0.00040,              :ti 0.00003}
+   :so  {:do 0.02557, :do# 0.00001  :re 0.00530, :re# 0.00037  :mi 0.02854, :fa 0.03653, :fa# 0.00207, :so 0.04835, :so# 0.00019, :la 0.02076, :la# 0.00054, :ti 0.00369}
+   :so# {:do 0.00001,                                       :mi 0.00001  :fa 0.00002  :fa# 0.00001, :so 0.00011, :so# 0.00002, :la 0.00014, :la# 0.00003, :ti 0.00002}
+   :la  {:do 0.00238, :do# 0.00004, :re 0.00168,              :mi 0.00065, :fa 0.00342, :fa# 0.00037, :so 0.03642, :so# 0.00017, :la 0.01261, :la# 0.00070, :ti 0.00854}
+   :la# {:do 0.00062,              :re 0.00003, :re# 0.00008, :mi 0.00001, :fa 0.00003,              :so 0.00043,              :la 0.00119, :la# 0.00048,           }
+   :ti  {:do 0.02025,              :re 0.00510,              :mi 0.00035, :fa 0.00029, :fa# 0.00010, :so 0.00323, :so# 0.00006, :la 0.01327, :la# 0.00001, :ti 0.00448}})
 
 
 (def metric-tendencies ; p243
