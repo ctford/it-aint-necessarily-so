@@ -19,7 +19,7 @@
   (def la# 5.5)
 (def ti -1)
 
-(def pitch-sample
+(def pitch-probabilities
   {do  19.5,
    do#  0.1,
    re  17.8,
@@ -64,7 +64,7 @@
   "Make a melody using pitch and duration generators."
   [pitch-generator duration-generator]
   (->>
-    (generate pitch-generator [(select-from pitch-sample)])
+    (generate pitch-generator [(select-from pitch-probabilities)])
     (phrase (generate duration-generator [15/4 1/4]))
     (take-while #(<= (+ (:time %) (:duration %)) 8))
     (times 2)
@@ -98,7 +98,7 @@
 ;; Demo 2: Weighted probabilities ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def pitch-sample
+(def pitch-probabilities
   {do  19.5,
    do#  0.1,
    re  17.8,
@@ -111,7 +111,7 @@
    la#  0.2,
    ti   4.8,})
 
-(def metric-sample
+(def metric-probabilities
   {1/4  3.6,
    2/4 35.7,
    3/4  2.2,
@@ -123,12 +123,12 @@
 (defn weighted-pitch
   "Choose a pitch based on how often they occur."
   [history]
-  (select-from pitch-sample))
+  (select-from pitch-probabilities))
 
 (defn weighted-duration
   "Choose a duration based on how often they occur."
   [history]
-  (select-from metric-sample))
+  (select-from metric-probabilities))
 
 (comment
   (live/play
