@@ -19,6 +19,38 @@
   (def la# 5.5)
 (def ti -1)
 
+(def pitch-sample
+  {do  19.5,
+   do#  0.1,
+   re  17.8,
+   re#  0.2,
+   mi  21.6,
+   fa  11.3,
+   fa# 0.70,
+   so  16.5,
+   la  7.30,
+   la#  0.2,
+   ti   4.8,})
+
+(defn generate
+  [generator history]
+  (let [value (generator history)
+        updated-history (cons value history) ]
+    (cons value (lazy-seq (generate generator updated-history)))))
+
+(defn with-closure [notes]
+  (let [anticipation (phrase [1/2 2] [1 0])
+        anticipation-onset (- (duration notes) (duration anticipation))]
+    (->> notes
+       (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
+       (with (after anticipation-onset anticipation)))))
+
+(defn stress [notes]
+  (map
+    (fn [{:keys [time] :as note}]
+      (if (zero? (mod time 2)) (assoc note :stressed true) note))
+    notes))
+
 (defn choose-with [choice [[value probability] & weights]]
   (if (< choice probability)
     value
@@ -28,11 +60,87 @@
   (let [total (->> weights vals (reduce +))]
     (choose-with (rand total) (seq weights))))
 
-(defn arbitrary-pitch [history]
+(defn melody-with
+  "Make a melody using pitch and duration generators."
+  [pitch-generator duration-generator]
+  (->>
+    (generate pitch-generator [(select-from pitch-sample)])
+    (phrase (generate duration-generator [15/4 1/4]))
+    (take-while #(<= (+ (:time %) (:duration %)) 8))
+    (times 2)
+    with-closure
+    stress
+    (where :pitch (comp high E major))
+    (tempo (bpm 90))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Demo 1: Equal probabilities ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn arbitrary-pitch
+  "Choose a random pitch from 0 to 7."
+  [history]
   (rand 7))
 
-(defn arbitrary-duration [history]
-  (+ 1/4 (rand 7/8)))
+(defn arbitrary-duration
+  "Choose a random duration from 0 to 1."
+  [history]
+  (rand 1))
+
+(comment
+  (live/play
+    (melody-with arbitrary-pitch arbitrary-duration)))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Demo 2: Weighted probabilities ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def pitch-sample
+  {do  19.5,
+   do#  0.1,
+   re  17.8,
+   re#  0.2,
+   mi  21.6,
+   fa  11.3,
+   fa# 0.70,
+   so  16.5,
+   la  7.30,
+   la#  0.2,
+   ti   4.8,})
+
+(def metric-sample
+  {1/4  3.6,
+   2/4 35.7,
+   3/4  2.2,
+   4/4 45.0,
+   6/4  5.4,
+   8/4  7.4,
+   12/4 0.7})
+
+(defn weighted-pitch
+  "Choose a pitch based on how often they occur."
+  [history]
+  (select-from pitch-sample))
+
+(defn weighted-duration
+  "Choose a duration based on how often they occur."
+  [history]
+  (select-from metric-sample))
+
+(comment
+  (live/play
+    (melody-with weighted-pitch weighted-duration)))
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Demo 3: Contextual probabilities ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def pitch-tendencies ; major, p158-159.
   {do  {do 0.03416, do# 0.00008, re 0.02806, re# 0.00022, mi 0.01974, fa 0.00210, fa# 0.00013  so 0.01321,              la 0.00839,              ti 0.02321}
@@ -48,8 +156,6 @@
    la# {do 0.00062,              re 0.00003, re# 0.00008, mi 0.00001, fa 0.00003,              so 0.00043,              la 0.00119, la# 0.00048,           }
    ti  {do 0.02025,              re 0.00510,              mi 0.00035, fa 0.00029, fa# 0.00010, so 0.00323, so# 0.00006, la 0.01327, la# 0.00001, ti 0.00448}})
 
-(defn contextual-pitch [[previous & history]]
-  (select-from (pitch-tendencies previous)))
 
 (def metric-tendencies ; p243
   {0/4  {1/4 2, 2/4 600, 3/4 144, 4/4 2680,       6/4 1219,         8/4 1491,                             12/4 125,                                16/4 36  }
@@ -69,60 +175,41 @@
    14/4 {                                                                                                                                15/4 50,  16/4 2147}
    15/4 {                                                                                                                                          16/4 277 }})
 
-(defn contextual-duration [[previous & history]]
+(defn contextual-pitch
+  "Choose a pitch based on the previous pitch."
+  [[previous & history]]
+  (select-from (pitch-tendencies previous)))
+
+(defn contextual-duration
+  "Choose a duration based on the previous metric position."
+  [[previous & history]]
   (let [time (reduce + previous history)
         position (mod time 16/4)]
     (- (select-from (metric-tendencies position)) position)))
 
-(defn generate [generator history]
-  (let [value (generator history)
-        updated-history (cons value history) ]
-    (cons value (lazy-seq (generate generator updated-history)))))
-
-(defn stress [notes]
-  (map
-    (fn [{:keys [time] :as note}]
-      (if (zero? (mod time 2)) (assoc note :stressed true) note))
-    notes))
-
-(defn sample [generator history]
-  (->> (generate generator history)
-       (take 1000)
-       frequencies
-       (map #(update-in % [1] * 0.1))
-       (into {})))
-
-(defonce pitch-sample  (sample contextual-pitch [-1]))
-(defonce metric-sample (sample contextual-duration [15/4 1/4]))
-
-(defn weighted-pitch [history]
-  (select-from pitch-sample))
-
-(defn weighted-duration [history]
-  (select-from metric-sample))
-
-(defn with-closure [notes]
-  (let [anticipation (phrase [1/2 2] [re do])
-        anticipation-onset (- (duration notes) (duration anticipation))]
-    (->> notes
-       (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
-       (with (after anticipation-onset anticipation)))))
-
-(defn melody-with [pitch-generator duration-generator]
-  (->>
-    (generate pitch-generator [(select-from pitch-sample)])
-    (phrase (generate duration-generator [15/4 1/4]))
-    (take-while #(<= (+ (:time %) (:duration %)) 8))
-    (times 2)
-    with-closure
-    stress
-    (where :pitch (comp high E major))
-    (tempo (bpm 90))))
-
 (comment
-  (live/play (melody-with arbitrary-pitch  arbitrary-duration))
-  (live/play (melody-with weighted-pitch   weighted-duration))
-  (live/play (melody-with contextual-pitch contextual-duration)))
+  (live/play
+    (melody-with contextual-pitch contextual-duration)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (definst bell [freq 440 dur 4 vol 0.25]
   (let [harmonic-series [1.0 2.0 3.0 4.2 5.3]
