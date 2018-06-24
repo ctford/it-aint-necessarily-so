@@ -62,7 +62,7 @@
 
 (defn melody-with
   "Make a melody using pitch and duration generators."
-  [pitch-generator duration-generator]
+  [duration-generator pitch-generator]
   (->>
     (generate pitch-generator [(select-from pitch-probabilities)])
     (phrase (generate duration-generator [15/4 1/4]))
@@ -90,7 +90,7 @@
 
 (comment
   (live/play
-    (melody-with arbitrary-pitch arbitrary-duration)))
+    (melody-with arbitratry-duration arbitrary-pitch)))
 
 
 
@@ -132,7 +132,7 @@
 
 (comment
   (live/play
-    (melody-with weighted-pitch weighted-duration)))
+    (melody-with weighted-duration weighted-pitch)))
 
 
 
@@ -189,7 +189,7 @@
 
 (comment
   (live/play
-    (melody-with contextual-pitch contextual-duration)))
+    (melody-with contextual-duration contextual-pitch)))
 
 
 
