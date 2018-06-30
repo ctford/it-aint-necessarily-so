@@ -36,7 +36,7 @@
                     </script>
                 </section>
 
-                <section data-markdown>
+               <section data-markdown>
                     <script type="text/template">
                         ## Sweet Anticipation
 
@@ -49,7 +49,20 @@
                 <section data-markdown>
                     <script type="text/template">
                         1. Music is appreciated through statistical learning.
-                        2. The fulfillment of expectation brings satisfaction.
+
+                        2. Expectation fulfillment satisfies to your "thinking fast" brain.
+
+                        3. Novelty keeps your "thinking slow" brain interested.
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Descriptivism vs Prescriptivism
+
+                        Descriptive: jumping by a major seventh is rare.
+
+                        Prescriptive: jumping by a major seventh is wrong.
                     </script>
                 </section>
 
@@ -69,7 +82,7 @@
 
                 <section data-markdown>
                     <script type="text/template">
-                        ## 1) Statistical learning
+                        ## Statistical learning
                         ![Pitch tendencies](img/pitch-tendencies.png)
 
                         Likelihood that a pitch on the vertical axis
@@ -79,7 +92,7 @@
 
                 <section data-markdown>
                     <script type="text/template">
-                        ## 2) Expectation fulfillment
+                        ## Expectation fulfillment
                         ![Metric tendencies](img/metric-tendencies.png)
 
                         Likelihood that a note at the metric position on the vertical axis
@@ -111,6 +124,8 @@
                     <script type="text/template">
                         ## Solution 1: Piano
                         [![Piano](img/piano.jpg)](https://commons.wikimedia.org/wiki/File:Klavier_nah_offen.jpg)
+
+                        Anything between the keys is impossible.
                     </script>
                 </section>
 
@@ -118,6 +133,8 @@
                     <script type="text/template">
                         ## Solution 2: Violin
                         [![Violin](img/violin.png)](https://commons.wikimedia.org/wiki/File:Violin_VL100.png)
+
+                        Anything goes.
                     </script>
                 </section>
 
@@ -125,6 +142,56 @@
                     <script type="text/template">
                         ## Solution 3: Guitar
                         [![Guitar](img/guitar.png)](https://commons.wikimedia.org/wiki/File:GuitareClassique5.png)
+
+                        There is a guide, but you can bend notes.
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Mezzo
+
+                        * [Haskell composition library](https://github.com/DimaSamoz/mezzo) by Dima Samoz.
+                        * Enforces rules of music composition at compile-time.
+                        * "A very strict spell-checker for music".
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Mezzo
+
+                        This compiles:
+                        ```
+                          comp = defScore $ start $ melody :| c :| d :| e :| f :>> g
+                        ```
+
+                        <br/>
+
+                        This doesn't, as leaps from c to b aren't "allowed":
+
+                        ```
+                          comp = defScore $ start $ melody :| c :| b :| e :| f :>> g
+                        ```
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Well-typed music does not sound wrong...?
+
+                        Dima encoded Chopin's Prelude into Mezzo:
+
+                        > The piece could be transcribed in almost its entirety - however, I occasionally had to leave out a few notes as they would create forbidden intervals which Mezzo pointed out.
+
+                        [Dima's PhD thesis](https://github.com/DimaSamoz/mezzo/blob/master/docs/dissertation.pdf).
+
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        > This demonstrates that the library works, as well as the fact that it is perfectly common for composers to break the rules for artistic effect.
                     </script>
                 </section>
 
