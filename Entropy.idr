@@ -8,7 +8,7 @@ data Probability : a -> Nat -> Type where
 begin : Probability [] 0
 begin = Occurred []
 
-(>>=) : {x : List Nat} -> {y : List Nat} -> Probability x bits -> ((x : List Nat) -> Probability y bits') -> Probability (y <+> x) (bits + bits')
+(>>=) : {x : List Nat} -> Probability x bits -> (List Nat -> Probability y bits') -> Probability (y <+> x) (bits + bits')
 (>>=) {x} {y} _ _ = Occurred (y <+> x)
 
 -- Imagine this gives some kind of probabilistic score.
