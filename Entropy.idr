@@ -2,32 +2,27 @@ module Entropy
 
 %default total
 
-data Probability : Type -> Nat -> Type where
-  Occurred : a -> Probability a bits
+data Probability : (x : a) ->  (a : Type) -> Nat -> Type where
+  Occurred : (x : a) -> Probability x a bits
 
-pure : a -> Probability a bits
-pure = Occurred
+start : Probability (the (List Integer) []) (List Integer) 0
+start = Occurred []
 
-extract : Probability a bits -> a
-extract (Occurred x) = x
+update : Probability x y bits' -> Probability x y (bits + bits')
+update (Occurred x) = Occurred x
 
-(>>=) : Probability a bits -> (a -> Probability b bits') -> Probability b (bits + bits')
-(Occurred a) >>= bGivenA = pure $ extract $ bGivenA a
+(>>=) : Probability x a bits -> (a -> Probability y a bits') -> Probability y a (bits + bits')
+(Occurred x) >>= bGivenA = update $ bGivenA x
 
-nothing : Probability (List Nat) 0
-nothing = pure []
+model : Integer -> List Integer -> Nat
+model 1 xs = 1
+model 2 xs = 2
+model 3 xs = 3
+model 4 xs = 4
+model x xs = 5
 
-so : Probability (List Nat) 1
-so = Occurred [4]
+followedBy : (x : Integer) -> (xs : List Integer) -> Probability (x :: xs) (List Integer) (model x xs)
+followedBy x xs = Occurred (x :: xs)
 
-re : Probability (List Nat) 2
-re = Occurred [1]
-
-and : Probability (List Nat) bits -> List Nat -> Probability (List Nat) bits
-and (Occurred xs) ys = Occurred (xs ++ ys)
-
-up : List Nat -> Probability (List Nat) 1
-up xs = Occurred (3 :: xs)
-
-run : Probability (List Nat) 4
-run = so >>= up >>= (and re)
+so : Probability [4] (List Integer) 4
+so = start >>= (?followedBy 4)
