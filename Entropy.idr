@@ -13,30 +13,31 @@ begin = Occurred []
 
 -- Imagine this gives some kind of probabilistic score.
 model : Nat -> List Nat -> Nat
-model x xs = x+1
+model Z xs = 1
+model (S k) xs = S (S k)
 
 followedBy : (x : Nat) -> (xs : List Nat) -> Probability [x] (model x xs)
 followedBy x xs = Occurred [x]
 
-doe : List Nat -> Probability (the (List Nat) [0]) 1
+doe : (xs : List Nat) -> Probability (the (List Nat) [0]) (model 0 xs)
 doe = followedBy 0
 
-re : List Nat -> Probability (the (List Nat) [1]) 2
+re : (xs : List Nat) -> Probability (the (List Nat) [1]) (model 1 xs)
 re = followedBy 1
 
-mi : List Nat -> Probability (the (List Nat) [2]) 3
+mi : (xs : List Nat) -> Probability (the (List Nat) [2]) (model 2 xs)
 mi = followedBy 2
 
-fa : List Nat -> Probability (the (List Nat) [3]) 4
+fa : (xs : List Nat) -> Probability (the (List Nat) [3]) (model 3 xs)
 fa = followedBy 3
 
-so : List Nat -> Probability (the (List Nat) [4]) 5
+so : (xs : List Nat) -> Probability (the (List Nat) [4]) (model 4 xs)
 so = followedBy 4
 
-la : List Nat -> Probability (the (List Nat) [5]) 6
+la : (xs : List Nat) -> Probability (the (List Nat) [5]) (model 5 xs)
 la = followedBy 5
 
-ti : List Nat -> Probability (the (List Nat) [6]) 7
+ti : (xs : List Nat) -> Probability (the (List Nat) [6]) (model 6 xs)
 ti = followedBy 6
 
 melody : Probability (the (List Nat) [2, 3, 4, 4, 0]) 18
