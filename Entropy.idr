@@ -5,20 +5,30 @@ module Entropy
 data Probability : a -> Nat -> Type where
   Occurred : (x : a) -> Probability x bits
 
-start : Probability (the (List Nat) []) 0
-start = Occurred []
+begin : Probability [] 0
+begin = Occurred []
 
-update : Probability x bits' -> Probability x (bits + bits')
-update (Occurred x) = Occurred x
+extract : {x : a} -> Probability x bits' -> a
+extract {x} _ = x
 
-(>>=) : {x : a} -> {y : a} -> Probability x bits -> ((x : a) -> Probability y bits') -> Probability y (bits + bits')
-(Occurred x) >>= bGivenA = update $ bGivenA x
+(>>=) : {x : List Nat} -> {y : List Nat} -> Probability x bits -> ((x : List Nat) -> Probability y bits') -> Probability (y ++ x) (bits + bits')
+(>>=) (Occurred x) bGivenA = Occurred $ (++ x) $ extract $ bGivenA x
 
+-- Imagine this gives some kind of probabilistic score.
 model : Nat -> List Nat -> Nat
 model x xs = x
 
-followedBy : (x : Nat) -> (xs : List Nat) -> Probability (x :: xs) (model x xs)
-followedBy x xs = Occurred (x :: xs)
+followedBy : (x : Nat) -> (xs : List Nat) -> Probability [x] (model x xs)
+followedBy x xs = Occurred [x]
 
-so : Probability (the (List Nat) [4]) 4
-so = start >>= (?followedBy 4)
+mi : List Nat -> Probability (the (List Nat) [2]) 2
+mi = followedBy 2
+
+so : List Nat -> Probability (the (List Nat) [4]) 4
+so = followedBy 4
+
+fa : List Nat -> Probability (the (List Nat) [3]) 3
+fa = followedBy 3
+
+melody : Probability (the (List Nat) [2, 3, 4]) 9
+melody = begin >>= so >>= fa >>= mi
