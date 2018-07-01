@@ -7,8 +7,8 @@
     [:div {:class "controls"} play]))
 
 (defn render [handle! state]
-  (let [code "(->> (phrase (repeat 1/16) [0 2 4 7 9 11 14 16 18 21])
-     (where :pitch (comp C major)))"]
+  (let [code "(->> (phrase (repeat 1/2) [:do :re :mi :fa :so :la :ti+ :do+])
+     (where :pitch (comp C major solfege)))"]
     [:div
      [:p "Klangmeister is a live coding environment for the browser. It lets you design synthesisers and compose music using
          computer code - without having to install anything on your own computer."]

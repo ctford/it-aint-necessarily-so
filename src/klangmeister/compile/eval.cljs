@@ -45,13 +45,13 @@
           inversion root augment]]; Chord modifiers
 
         [leipzig.melody :refer
-         [phrase then times with  ; Melody makers
-          rhythm having
+         [then times with         ; Melody makers
           all bpm tempo where     ; Melody modifiers
           after wherever]]
 
         [klangmeister.so.necessarily :refer
-         [pitch-probabilities]]))))
+         [phrase rhythm having
+          solfege pitch-probabilities]]))))
 
 (def dependencies
   "A bundle of dependencies."

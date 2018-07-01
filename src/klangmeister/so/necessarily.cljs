@@ -1,34 +1,58 @@
 (ns klangmeister.so.necessarily
-  (:require [leipzig.melody :refer [phrase tempo where times duration with after then]]
+  (:require [leipzig.melody :refer [tempo where times duration with after then bpm]]
             [leipzig.scale :refer [A E C minor major scale high low from]]))
 
+(defn rhythm
+  "Translates a sequence of durations into a rhythm.
+  e.g. (rhythm [1 1 2])"
+  [durations]
+  (let [times (reductions + 0 durations)]
+    (map #(zipmap [:time :duration] [%1 %2]) times durations)))
+
+(defn having
+  "Zips an arbitrary quality onto a melody.
+  e.g. (->> (rhythm [1 1/2]) (having :drum [:kick :snare]))"
+  [k values notes]
+  (map #(assoc %1 k %2) notes values))
+
+(defn phrase
+  "Translates a sequence of durations and pitches into a melody.
+  nil pitches signify rests.
+  e.g. (phrase [1/2 1/2 1/2 3/2 1/2 1/2 1/2] [0 1 2 nil 4 4/5 5])"
+  [durations pitches]
+  (->> (rhythm durations)
+       (having :pitch pitches)
+       (filter (comp not nil? :pitch))))
 
 (def solfege
-  {:do  0
+  {:ti -1
+   :do  0
    :do# 0.5
    :re  1
    :re# 1.5
    :mi  2
    :fa  3
    :fa# 3.5
-   :so  0
+   :so  4
    :so# 4.5
    :la  5
    :la# 5.5
-   :ti -1})
+   :ti+ 6
+   :do+ 7
+   })
 
 (def pitch-probabilities
-  {:do  19.5,
-   :do#  0.1,
-   :re  17.8,
-   :re#  0.2,
-   :mi  21.6,
-   :fa  11.3,
-   :fa# 0.70,
-   :so  16.5,
-   :la  7.30,
-   :la#  0.2,
-   :ti   4.8,})
+  {:do  19.5
+   :do#  0.1
+   :re  17.8
+   :re#  0.2
+   :mi  21.6
+   :fa  11.3
+   :fa# 0.70
+   :so  16.5
+   :la  7.30
+   :la#  0.2
+   :ti   4.8})
 
 (defn generate
   [generator history]
