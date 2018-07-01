@@ -8,7 +8,7 @@
 
 (def steps
   {:phrase
-   ["We can compose a melody from pitches and durations chosen randomly."
+   ["A melody chosen randomly sounds a bit... weird."
     "(melody-with arbitrary-duration arbitrary-pitch)"]})
 
 (defn render-one [k handle! state]
@@ -20,6 +20,4 @@
 
 (defn render [handle! state]
   [:div
-   [render-one :phrase handle! state]
-   [:div
-    [:p "Now that you know how to design synthesisers and compose melodies, try " [:a {:href "/klangmeister/performance"} "putting the two together"] "."]]])
+   [render-one :phrase handle! state]])

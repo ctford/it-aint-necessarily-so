@@ -52,9 +52,10 @@
         [klangmeister.so.necessarily :refer
          [phrase rhythm having melody-with
           arbitrary-pitch arbitrary-duration
-          weighted-pitch weighted-duration
-          contextual-pitch contextual-duration
-          solfege pitch-probabilities]]))))
+          select-from
+          pitch-probabilities metric-probabilities
+          pitch-tendencies metric-tendencies
+          solfege]]))))
 
 (def dependencies
   "A bundle of dependencies."

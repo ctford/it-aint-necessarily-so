@@ -10,6 +10,6 @@
   (let [code "(->> (phrase (repeat 1/2) [:do :re :mi :fa :so :la :ti+ :do+])
      (where :pitch (comp C major solfege)))"]
     [:div
-     [:p "This is a live coding environment that compiles Clojurescript and calls the web audio API."]
+     [:p "This is a live coding environment that compiles Clojurescript and uses your browser's web audio API."]
      [editor/render :about code handle! state]
      [controls :about handle! state] ]))

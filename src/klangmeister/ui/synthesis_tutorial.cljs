@@ -8,8 +8,21 @@
 
 (def steps
   {:phrase
-   ["We can compose a melody from pitches and durations weighted by how often they occur in context."
-    "(melody-with contextual-duration contextual-pitch)"]})
+   ["When we take into account the last note, we can make melodies that sound much more realistic."
+    "
+(defn contextual-pitch
+  \"Choose a pitch based on the previous pitch.\"
+  [[previous & history]]
+  (select-from (pitch-tendencies previous)))
+
+(defn contextual-duration
+  \"Choose a duration based on the previous metric position.\"
+  [[previous & history]]
+  (let [time (reduce + previous history)
+        position (mod time 16/4)]
+    (- (select-from (metric-tendencies position)) position)))
+
+(melody-with contextual-duration contextual-pitch)"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]
@@ -20,6 +33,4 @@
 
 (defn render [handle! state]
   [:div
-   [render-one :phrase handle! state]
-   [:div
-    [:p "Now that you know how to design synthesisers and compose melodies, try " [:a {:href "/klangmeister/performance"} "putting the two together"] "."]]])
+   [render-one :phrase handle! state]])

@@ -8,8 +8,18 @@
 
 (def steps
   {:phrase
-   ["We can compose a melody from pitches and durations weighted by how often they occur in real music."
-    "(melody-with weighted-duration weighted-pitch)"]})
+   ["A melody composed based on the frequencies that pitches and durations occur can sound nice sometimes, but usually lacks life."
+    "(defn weighted-pitch
+  \"Choose a pitch based on how often they occur.\"
+  [history]
+  (select-from pitch-probabilities))
+
+(defn weighted-duration
+  \"Choose a duration based on how often they occur.\"
+  [history]
+  (select-from metric-probabilities))
+
+(melody-with weighted-duration weighted-pitch)"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]
@@ -20,6 +30,4 @@
 
 (defn render [handle! state]
   [:div
-   [render-one :phrase handle! state]
-   [:div
-    [:p "Now that you know how to design synthesisers and compose melodies, try " [:a {:href "/klangmeister/performance"} "putting the two together"] "."]]])
+   [render-one :phrase handle! state]])

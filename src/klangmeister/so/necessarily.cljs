@@ -142,16 +142,6 @@
    2.00  7.4,
    3.00  0.7})
 
-(defn weighted-pitch
-  "Choose a pitch based on how often they occur."
-  [history]
-  (select-from pitch-probabilities))
-
-(defn weighted-duration
-  "Choose a duration based on how often they occur."
-  [history]
-  (select-from metric-probabilities))
-
 (comment
   (live/play
     (melody-with weighted-duration weighted-pitch)))
@@ -196,19 +186,3 @@
    3.25 {                                                                                                                              3.50   23,           4.00    3}
    3.50 {                                                                                                                                         3.75  50, 4.00 2147}
    3.75 {                                                                                                                                                   4.00  277}})
-
-(defn contextual-pitch
-  "Choose a pitch based on the previous pitch."
-  [[previous & history]]
-  (select-from (pitch-tendencies previous)))
-
-(defn contextual-duration
-  "Choose a duration based on the previous metric position."
-  [[previous & history]]
-  (let [time (reduce + previous history)
-        position (mod time 16/4)]
-    (- (select-from (metric-tendencies position)) position)))
-
-(comment
-  (live/play
-    (melody-with contextual-duration contextual-pitch)))
