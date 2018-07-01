@@ -50,7 +50,10 @@
           after wherever]]
 
         [klangmeister.so.necessarily :refer
-         [phrase rhythm having
+         [phrase rhythm having melody-with
+          arbitrary-pitch arbitrary-duration
+          weighted-pitch weighted-duration
+          contextual-pitch contextual-duration
           solfege pitch-probabilities]]))))
 
 (def dependencies
