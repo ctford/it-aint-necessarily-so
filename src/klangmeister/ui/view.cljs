@@ -1,5 +1,6 @@
 (ns klangmeister.ui.view
   (:require
+    [klangmeister.ui.arbitrary :as arbitrary]
     [klangmeister.ui.composition :as composition]
     [klangmeister.ui.reference :as reference]
     [klangmeister.ui.about :as about]
@@ -20,8 +21,9 @@
 (defn tabs [current]
   [:div {:id "menu"}
    [:ul
-    [:li (link current :synthesis "/it-aint-necessarily-so/synthesis" "Synthesis")]
-    [:li (link current :composition "/it-aint-necessarily-so/composition" "Composition")]
+    [:li (link current :arbitrary "/it-aint-necessarily-so/arbitrary" "Arbitrary composition")]
+    [:li (link current :composition "/it-aint-necessarily-so/composition" "Weighted composition")]
+    [:li (link current :synthesis "/it-aint-necessarily-so/synthesis" "Contextual composition")]
     [:li (link current :reference "/it-aint-necessarily-so/reference" "Reference")]
     [:li (link current :about "/it-aint-necessarily-so/about" "About")]]])
 
@@ -37,6 +39,9 @@
 
 (defn about [handle! state-atom]
   (frame :about [about/render handle! @state-atom]))
+
+(defn arbitrary [handle! state-atom]
+  (frame :arbitrary [arbitrary/render handle! @state-atom]))
 
 (defn composition [handle! state-atom]
   (frame :composition [composition/render handle! @state-atom]))
