@@ -95,22 +95,6 @@
     (where :pitch (comp high E major solfege))
     (tempo (bpm 90))))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Demo 1: Equal probabilities ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(comment
-  (live/play
-    (melody-with arbitratry-duration arbitrary-pitch)))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Demo 2: Weighted probabilities ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (def pitch-probabilities
   {:do  19.5,
    :do#  0.1,
@@ -137,14 +121,6 @@
   (live/play
     (melody-with weighted-duration weighted-pitch)))
 
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Demo 3: Contextual probabilities ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (def pitch-tendencies ; major, p158-159.
   {:do  {:do 26.42, :do#  0.06, :re 21.70, :re#  0.17, :mi 15.27, :fa  1.62, :fa#  0.10, :so 10.22,             :la  6.49,             :ti 17.95}
    :do# {:do  5.88, :do# 11.76, :re 61.76, :re#  8.82,                                                          :la  5.88,             :ti  5.88}
@@ -158,7 +134,6 @@
    :la  {:do  3.55, :do#  0.06, :re  2.51,             :mi  0.97, :fa  5.11, :fa#  0.55, :so 54.37, :so#  0.25, :la 18.83, :la#  1.05, :ti 12.75}
    :la# {:do 21.60,             :re  1.05, :re#  2.79, :mi  0.35, :fa  1.05,             :so 14.98,             :la 41.46, :la# 16.72,          }
    :ti  {:do 33.59,             :re  8.46,             :mi  0.58, :fa  0.48, :fa#  0.17, :so  5.36, :so# 21.91, :la 22.01, :la#  0.02, :ti  7.43}})
-
 
 (def metric-tendencies ; p243
   {0.00 {0.25 2, 0.50 600, 0.75 144, 1.00 2680,       1.50 1219,           2.00 1491,                              3.00 125,                                 4.00  36}
