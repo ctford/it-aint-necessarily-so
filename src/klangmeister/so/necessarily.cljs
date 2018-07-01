@@ -1,8 +1,9 @@
-(ns so.necessarily
-  (:require [clojure.pprint :refer [pp pprint]]
-            [leipzig.melody :refer :all]
+(ns klangmeister.so.necessarily
+  (:require [leipzig.melody :refer [phrase tempo where times duration with after then]]
             [leipzig.scale :refer [A E C minor major scale high low from]]))
 
+(comment
+  
 (def solfege
   {:do  0
    :do# 0.5
@@ -189,3 +190,4 @@
   (live/play
     (melody-with contextual-duration contextual-pitch)))
 
+  )

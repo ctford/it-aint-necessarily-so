@@ -48,7 +48,10 @@
          [phrase then times with  ; Melody makers
           rhythm having
           all bpm tempo where     ; Melody modifiers
-          after wherever]]))))
+          after wherever]]
+
+        [klangmeister.so.necessarily :refer
+         [pitch-tendencies]]))))
 
 (def dependencies
   "A bundle of dependencies."
@@ -58,7 +61,8 @@
     leipzig.melody
     leipzig.scale
     cljs-bach.synthesis
-    klangmeister.sound.instruments))
+    klangmeister.sound.instruments
+    klangmeister.so.necessarily))
 
 (defn loader
   "A namespace loader that looks in the dependencies bundle for required namespaces."
