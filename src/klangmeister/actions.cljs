@@ -4,8 +4,4 @@
 (defrecord PlayOnce [target])
 (defrecord Doc [string target])
 (defrecord Test [target])
-(defrecord Gist [gist target])
-(defrecord Import [uri target])
-(defrecord Loop [target])
-(defrecord Stop [target])
 (defrecord Refresh [text target])

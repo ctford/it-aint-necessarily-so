@@ -54,29 +54,10 @@
           (assoc-in [pane :value] value)
           (assoc-in [pane :text] expr-str)))))
 
-(def gist-uri (partial str "https://api.github.com/gists/"))
-
 (extend-protocol framework/Action
   action/Refresh
   (process [this handle! state]
     (refresh this handle! state))
-
-  action/Gist
-  (process [{gist :gist pane :target} handle! state]
-    (let [refresh #(handle! (action/->Refresh % pane))
-          handler #(-> % :files vals first :content refresh)]
-      (ajax/GET (gist-uri gist) {:handler handler :response-format :json :keywords? true})
-      state))
-
-  action/Import
-  (process [{uri :uri pane :target} handle! state]
-    (let [refresh #(handle! (action/->Refresh % pane))]
-      (ajax/GET uri {:handler refresh})
-      state))
-
-  action/Stop
-  (process [{pane :target} handle! state]
-    (assoc-in state [pane :looping?] false))
 
   action/Play
   (process [{pane :target :as this} handle! state]
@@ -103,14 +84,4 @@
   (process [{pane :target :as this} handle! {:keys [audiocontext] :as state}]
     (let [{:keys [value]} (pane state)]
       (music/play! audiocontext [{:time 0 :duration 1 :instrument (constantly value)}])
-      state))
-
-  action/Loop
-  (process [{pane :target :as this} handle! {:keys [audiocontext] :as state}]
-    (let [{:keys [value looping? audio-sync] :or {audio-sync (.-currentTime audiocontext)}} (pane state)
-          duration (melody/duration value)]
-      (if looping?
-        (do (music/play-from! audiocontext audio-sync value)
-            (schedule! #(handle! this) duration)
-            (-> state (update-syncs pane audio-sync duration)))
-        (-> state (clear-syncs pane))))))
+      state)))

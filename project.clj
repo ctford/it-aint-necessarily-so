@@ -21,7 +21,7 @@
             [lein-figwheel "0.5.0-2"]
             [lein-doo "0.1.8"]]
 
-  :clean-targets ^{:protect false} ["resources/public/klangmeister/js/compiled"
+  :clean-targets ^{:protect false} ["resources/public/it-aint-necessarily-so/js/compiled"
                                     "target"
                                     "out"]
 
@@ -34,8 +34,8 @@
                         :compiler {:main "klangmeister.core"
                                    :optimizations :none
                                    :pretty-print true
-                                   :output-to "resources/public/klangmeister/js/compiled/app.js"
-                                   :output-dir "resources/public/klangmeister/js/compiled"
+                                   :output-to "resources/public/it-aint-necessarily-so/js/compiled/app.js"
+                                   :output-dir "resources/public/it-aint-necessarily-so/js/compiled"
                                    :asset-path "js/compiled"}}
                        {:id "prod"
                         :source-paths ["src"]
@@ -44,7 +44,7 @@
                                    :optimizations :simple
                                    :pretty-print false
                                    :optimize-constants true
-                                   :output-to "resources/public/klangmeister/js/compiled/app.js"
+                                   :output-to "resources/public/it-aint-necessarily-so/js/compiled/app.js"
                                    :asset-path "js/compiled"}}
                        {:id "test"
                         :source-paths ["src" "test"]
@@ -53,4 +53,4 @@
                                    :static-fns true
                                    :optimizations :simple
                                    :main klangmeister.test.runner}}]}
-  :figwheel {:css-dirs ["resources/public/klangmeister/css"]})
+  :figwheel {:css-dirs ["resources/public/it-aint-necessarily-so/css"]})
