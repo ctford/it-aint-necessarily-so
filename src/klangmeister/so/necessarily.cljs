@@ -100,15 +100,6 @@
 ;; Demo 1: Equal probabilities ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn arbitrary-pitch
-  "Choose a random pitch from 0 to 7."
-  [history]
-  (rand 7))
-
-(defn arbitrary-duration
-  "Choose a random duration from 0 to 1."
-  [history]
-  (rand 1))
 
 (comment
   (live/play

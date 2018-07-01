@@ -9,8 +9,7 @@
 (def steps
   {:phrase
    ["When we take into account the last note, we can make melodies that sound much more realistic."
-    "
-(defn contextual-pitch
+    "(defn contextual-pitch
   \"Choose a pitch based on the previous pitch.\"
   [[previous & history]]
   (select-from (pitch-tendencies previous)))

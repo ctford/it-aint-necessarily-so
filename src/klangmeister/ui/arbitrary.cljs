@@ -9,7 +9,17 @@
 (def steps
   {:phrase
    ["A melody chosen randomly sounds a bit... weird."
-    "(melody-with arbitrary-duration arbitrary-pitch)"]})
+    "(defn arbitrary-pitch
+  \"Choose a random pitch from 0 to 7.\"
+  [history]
+  (rand 7))
+
+(defn arbitrary-duration
+  \"Choose a random duration from 0 to 1.\"
+  [history]
+  (rand 1))
+
+(melody-with arbitrary-duration arbitrary-pitch)"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]

@@ -50,9 +50,8 @@
           after wherever]]
 
         [klangmeister.so.necessarily :refer
-         [phrase rhythm having melody-with
-          arbitrary-pitch arbitrary-duration
-          select-from
+         [phrase rhythm having
+          melody-with select-from
           pitch-probabilities metric-probabilities
           pitch-tendencies metric-tendencies
           solfege]]))))
