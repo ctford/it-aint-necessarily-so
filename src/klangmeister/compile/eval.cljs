@@ -51,7 +51,7 @@
           after wherever]]
 
         [klangmeister.so.necessarily :refer
-         [pitch-tendencies]]))))
+         [pitch-probabilities]]))))
 
 (def dependencies
   "A bundle of dependencies."

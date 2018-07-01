@@ -2,8 +2,7 @@
   (:require [leipzig.melody :refer [phrase tempo where times duration with after then]]
             [leipzig.scale :refer [A E C minor major scale high low from]]))
 
-(comment
-  
+
 (def solfege
   {:do  0
    :do# 0.5
@@ -38,7 +37,7 @@
     (cons value (lazy-seq (generate generator updated-history)))))
 
 (defn with-closure [notes]
-  (let [anticipation (phrase [1/2 2] [:re :do])
+  (let [anticipation (phrase [0.5 2] [:re :do])
         anticipation-onset (- (duration notes) (duration anticipation))]
     (->> notes
        (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
@@ -64,7 +63,7 @@
   [duration-generator pitch-generator]
   (->>
     (generate pitch-generator [(select-from pitch-probabilities)])
-    (phrase (generate duration-generator [15/4 1/4]))
+    (phrase (generate duration-generator [3.75 0.25]))
     (take-while #(<= (+ (:time %) (:duration %)) 8))
     (times 2)
     with-closure
@@ -111,13 +110,13 @@
    :ti   4.8,})
 
 (def metric-probabilities
-  {1/4  3.6,
-   2/4 35.7,
-   3/4  2.2,
-   4/4 45.0,
-   6/4  5.4,
-   8/4  7.4,
-   12/4 0.7})
+  {0.25  3.6,
+   0.50 35.7,
+   0.75  2.2,
+   1.00 45.0,
+   1.50  5.4,
+   2.00  7.4,
+   3.00  0.7})
 
 (defn weighted-pitch
   "Choose a pitch based on how often they occur."
@@ -157,22 +156,22 @@
 
 
 (def metric-tendencies ; p243
-  {0/4  {1/4 2, 2/4 600, 3/4 144, 4/4 2680,       6/4 1219,         8/4 1491,                             12/4 125,                                16/4 36  }
-   1/4  {       2/4 2,   3/4 5                                                                                                                              }
-   2/4  {                         4/4 589,        6/4 6,                                                                                           16/4 2   }
-   3/4  {                         4/4 147,        6/4 2                                                                                                     }
-   4/4  {                                  5/4 4, 6/4 760, 7/4 117, 8/4 2379,         10/4 48,            12/4 77,                                 16/4 4   }
-   5/4  {                                         6/4 4                                                                                                     }
-   6/4  {                                                  7/4 18,  8/4 1969,         10/4 3                                                                }
-   7/4  {                                                           8/4 135                                                                                 }
-   8/4  {                                                                     9/4 10, 10/4 880, 11/4 166, 12/4 3720,          14/4 367,            16/4 457 }
-   9/4  {                                                                             10/4 7              12/4 3                                            }
-   10/4 {                                                                                       11/4 13,  12/4 917,           14/4 7                        }
-   11/4 {                                                                                                 12/4 179                                          }
-   12/4 {                                                                                                            13/4 26, 14/4 1804, 15/4 227, 16/4 2924}
-   13/4 {                                                                                                                     14/4 23,             16/4 3   }
-   14/4 {                                                                                                                                15/4 50,  16/4 2147}
-   15/4 {                                                                                                                                          16/4 277 }})
+  {0.00 {0.25 2, 0.50 600, 0.75 144, 1.00 2680,       1.50 1219,           2.00 1491,                              3.00 125,                                 4.00  36}
+   0.25 {        0.50   2, 0.75   5,                                                                                                                                 }
+   0.50 {                            1.00  589,       1.50    6,                                                                                             4.00   2}
+   0.75 {                            1.00  147,       1.50    2,                                                                                                     }
+   1.00 {                                    1.25 4,  1.50  760, 1.75 117, 2.00 2379,          2.50  48,           3.00   77,                                4.00   4}
+   1.25 {                                             1.50    4,                                                                                                     }
+   1.50 {                                                        1.75  18, 2.00 1969,          2.50   3,                                                             }
+   1.75 {                                                                  2.00  135,                                                                                }
+   2.00 {                                                                             2.25 10, 2.50 880, 2.75 166, 3.00 3720,          3.50  367,            4.00 457}
+   2.25 {                                                                                      2.50   7,           3.00    3,                                        }
+   2.50 {                                                                                                2.75  13, 3.00  917,          3.50    7,                    }
+   2.75 {                                                                                                          3.00  179,                                        }
+   3.00 {                                                                                                                     3.25 26, 3.50 1804, 3.75 227, 4.00 2924}
+   3.25 {                                                                                                                              3.50   23,           4.00    3}
+   3.50 {                                                                                                                                         3.75  50, 4.00 2147}
+   3.75 {                                                                                                                                                   4.00  277}})
 
 (defn contextual-pitch
   "Choose a pitch based on the previous pitch."
@@ -189,5 +188,3 @@
 (comment
   (live/play
     (melody-with contextual-duration contextual-pitch)))
-
-  )
