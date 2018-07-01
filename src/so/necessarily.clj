@@ -1,10 +1,7 @@
 (ns so.necessarily
-  (:require [overtone.live :refer :all :exclude [stop scale sample]]
-            [clojure.pprint :refer [pp pprint]]
+  (:require [clojure.pprint :refer [pp pprint]]
             [leipzig.melody :refer :all]
-            [leipzig.scale :refer [A E C minor major scale high low from]]
-            [leipzig.live :as live]
-            [leipzig.live :refer [stop]]))
+            [leipzig.scale :refer [A E C minor major scale high low from]]))
 
 (def solfege
   {:do  0
@@ -192,37 +189,3 @@
   (live/play
     (melody-with contextual-duration contextual-pitch)))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-(definst bell [freq 440 dur 4 vol 0.25]
-  (let [harmonic-series [1.0 2.0 3.0 4.2 5.3]
-        proportions     [1.0 0.6 0.4 0.2 0.1]
-        component
-         (fn [harmonic proportion]
-           (* 1/2 vol proportion
-              (env-gen (perc 0.001 (* proportion dur)))
-              (sin-osc (* harmonic freq))))
-        whole (mix (map component harmonic-series proportions))]
-    (detect-silence whole :action FREE)
-    whole))
-
-(defmethod live/play-note :default [{:keys [pitch duration stressed]}]
-  (bell :freq (midi->hz pitch) :vol (if stressed 0.45 0.25)))
