@@ -14,17 +14,19 @@
 (defn tabs [current]
   [:div {:id "menu"}
    [:ul
-    [:li (link current :arbitrary "/it-aint-necessarily-so/arbitrary" "Arbitrary composition")]
-    [:li (link current :composition "/it-aint-necessarily-so/composition" "Weighted composition")]
-    [:li (link current :synthesis "/it-aint-necessarily-so/synthesis" "Contextual composition")]
+    [:li (link current :arbitrary "/it-aint-necessarily-so/arbitrary" "Arbitrary")]
+    [:li (link current :composition "/it-aint-necessarily-so/composition" "Weighted")]
+    [:li (link current :synthesis "/it-aint-necessarily-so/synthesis" "Contextual")]
     [:li (link current :reference "/it-aint-necessarily-so/reference" "Reference")]
     [:li (link current :about "/it-aint-necessarily-so/about" "About")]]])
 
 (defn frame [current content]
   [:div
-   [:h1 [:a {:href "/it-aint-necessarilly-so/"} "It ain't necessarily so"]]
+   [:h1 [:a {:href "/it-aint-necessarily-so/"} "It ain't necessarily so"]]
    [tabs current]
-   content])
+   content]
+  [:div
+   [:a {:href "/it-aint-necessarily-so/slides.html" } "Slides"]])
 
 (defn synthesis [handle! state-atom]
   (frame :synthesis [synthesis/render handle! @state-atom]))
