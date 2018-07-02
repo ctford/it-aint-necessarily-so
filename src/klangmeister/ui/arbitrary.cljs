@@ -19,7 +19,9 @@
   [history]
   (rand 1))
 
-(melody-with arbitrary-duration arbitrary-pitch)"]})
+(->>
+  (melody-with arbitrary-duration arbitrary-pitch)
+  (where :pitch (comp equal C major)))"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]

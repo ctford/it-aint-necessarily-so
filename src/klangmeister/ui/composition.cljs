@@ -19,7 +19,9 @@
   [history]
   (select-from metric-probabilities))
 
-(melody-with weighted-duration weighted-pitch)"]})
+(->>
+  (melody-with weighted-duration weighted-pitch)
+  (where :pitch (comp equal C major solfege)))"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]

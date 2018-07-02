@@ -20,8 +20,9 @@
   (let [time (reduce + previous history)
         position (mod time 16/4)]
     (- (select-from (metric-tendencies position)) position)))
-
-(melody-with contextual-duration contextual-pitch)"]})
+(->>
+  (melody-with contextual-duration contextual-pitch)
+  (where :pitch (comp equal C major solfege)))"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]
