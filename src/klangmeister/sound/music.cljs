@@ -4,8 +4,9 @@
 (defn play-from!
   "Take a sequence of notes and play them from a set point in an audiocontext."
   [audiocontext from notes]
-  (doseq [{:keys [time duration instrument] :as note} notes]
+  (doseq [{:keys [time instrument] :as note} notes]
     (let [at (+ time from)
+          duration 1.0
           synth-instance (-> note
                              (dissoc :time)
                              instrument)
