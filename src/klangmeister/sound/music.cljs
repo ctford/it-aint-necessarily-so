@@ -6,7 +6,7 @@
   [audiocontext from notes]
   (doseq [{:keys [time instrument] :as note} notes]
     (let [at (+ time from)
-          duration 4.0
+          duration 5.2
           synth-instance (-> note
                              (dissoc :time)
                              instrument)
