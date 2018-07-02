@@ -24,22 +24,22 @@
        (having :pitch pitches)
        (filter (comp not nil? :pitch))))
 
-(def solfege
-  {:ti -1
-   :do  0
-   :do# 0.5
-   :re  1
-   :re# 1.5
-   :mi  2
-   :fa  3
-   :fa# 3.5
-   :so  4
-   :so# 4.5
-   :la  5
-   :la# 5.5
-   :ti+ 6
-   :do+ 7
-   })
+(defn solfege [k]
+  (get {:ti -1
+        :do  0
+        :do# 0.5
+        :re  1
+        :re# 1.5
+        :mi  2
+        :fa  3
+        :fa# 3.5
+        :so  4
+        :so# 4.5
+        :la  5
+        :la# 5.5
+        :ti+ 6
+        :do+ 7}
+       k k))
 
 (def pitch-probabilities
   {:do  19.5
