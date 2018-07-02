@@ -59,12 +59,6 @@
   (process [this handle! state]
     (refresh this handle! state))
 
-  action/Play
-  (process [{pane :target :as this} handle! state]
-    (if-not (< (Date.now) (get-in state [pane :sync]))
-      (framework/process (action/->Loop pane) handle! (assoc-in state [pane :looping?] true))
-      state))
-
   action/PlayOnce
   (process [{pane :target :as this} handle! {:keys [audiocontext] :as state}]
     (let [{:keys [value]} (pane state)]
