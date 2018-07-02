@@ -85,15 +85,16 @@
 (defn melody-with
   "Make a melody using pitch and duration generators."
   [duration-generator pitch-generator]
-  (->>
-    (generate pitch-generator [(select-from pitch-probabilities)])
-    (phrase (generate duration-generator [3.75 0.25]))
-    (take-while #(<= (+ (:time %) (:duration %)) 8))
-    (times 2)
-    with-closure
-    with-stress
-    (where :pitch (comp high E major solfege))
-    (tempo (bpm 90))))
+  (let [pitches (take 20 (generate pitch-generator [(select-from pitch-probabilities)]))]
+    (js/console.log (str pitches))
+    (->>
+      (phrase (generate duration-generator [3.75 0.25]) pitches)
+      (take-while #(<= (+ (:time %) (:duration %)) 8))
+      (times 2)
+      with-closure
+      with-stress
+      (where :pitch (comp C major solfege))
+      (tempo (bpm 90)))))
 
 (def pitch-probabilities
   {:do  19.5,
