@@ -24,9 +24,8 @@
   [:div
    [:h1 [:a {:href "/it-aint-necessarily-so/"} "It ain't necessarily so"]]
    [tabs current]
-   content]
-  [:div
-   [:a {:href "/it-aint-necessarily-so/slides.html" } "Slides"]])
+   content
+   [:a {:href "/it-aint-necessarily-so/slides.html"} "Slides"]])
 
 (defn synthesis [handle! state-atom]
   (frame :synthesis [synthesis/render handle! @state-atom]))
