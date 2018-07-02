@@ -63,6 +63,7 @@
     leipzig.chord
     leipzig.melody
     leipzig.scale
+    leipzig.temperament
     cljs-bach.synthesis
     klangmeister.sound.instruments
     klangmeister.so.necessarily))
