@@ -49,6 +49,9 @@
           all bpm tempo where     ; Melody modifiers
           after wherever]]
 
+        [leipzig.temperament :refer
+         [equal pythagorean just meantone]]
+
         [klangmeister.so.necessarily :refer
          [phrase rhythm having
           melody-with select-from
