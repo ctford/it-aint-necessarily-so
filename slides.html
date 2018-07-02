@@ -32,7 +32,7 @@
 
                         [@ctford](https://twitter.com/ctford)/[ThoughtWorks](https://thoughtworks.com)
 
-                        [Code examples](https://github.com/ctford/it-aint-necessarily-so/blob/master/src/so/necessarily.clj)
+                        [App](https://ctford.github.io/it-aint-necessarily-so/)
                     </script>
                 </section>
 
@@ -69,14 +69,8 @@
                 <section data-markdown>
                     <script type="text/template">
                         ## Solfège
-                        <img style="height: 300px" src="img/solfege.jpg">
-                    </script>
-                </section>
 
-                <section data-markdown>
-                    <script type="text/template">
-                        ## The Sound of Music
-                        <img style="height: 300px" src="img/sound-of-music.jpg">
+                        [App](https://ctford.github.io/it-aint-necessarily-so/)
                     </script>
                 </section>
 
@@ -102,7 +96,7 @@
 
                 <section data-markdown>
                     <script type="text/template">
-                        Demo time!
+                        [Demo time!](https://ctford.github.io/it-aint-necessarily-so/)
                     </script>
                 </section>
 
@@ -197,7 +191,26 @@
 
                 <section data-markdown>
                     <script type="text/template">
-                        ## Imaginary types
+                        ## An idea: Probabilistic types
+
+                        ```
+                        data Probability : a -> Nat -> Type where
+                          Occurred : (x : a) -> Probability x bits
+
+                        melody : Probability [2, 3, 4, 4, 0] 18
+                        melody = begin >>= doe >>= so >>= so >>= fa >>= mi
+                        ```
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Conclusion
+
+                        * A naive application of type theory leads to innovative states being unrepresentable.
+                        * Dependent types might be able to help in domains where states are conventional/unconventional...
+                        * ...but we would have to work at it.
+                        * Huron's 'Sweet Anticipation' is really cool.
                     </script>
                 </section>
 
