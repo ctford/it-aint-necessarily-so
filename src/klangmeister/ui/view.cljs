@@ -2,7 +2,6 @@
   (:require
     [klangmeister.ui.arbitrary :as arbitrary]
     [klangmeister.ui.composition :as composition]
-    [klangmeister.ui.reference :as reference]
     [klangmeister.ui.about :as about]
     [klangmeister.ui.synthesis-tutorial :as synthesis]))
 
@@ -17,15 +16,14 @@
     [:li (link current :arbitrary "/it-aint-necessarily-so/arbitrary" "Arbitrary")]
     [:li (link current :composition "/it-aint-necessarily-so/composition" "Weighted")]
     [:li (link current :synthesis "/it-aint-necessarily-so/synthesis" "Contextual")]
-    [:li (link current :reference "/it-aint-necessarily-so/reference" "Reference")]
+    [:li (link current :reference "/it-aint-necessarily-so/slides.html" "Slides")]
     [:li (link current :about "/it-aint-necessarily-so/about" "About")]]])
 
 (defn frame [current content]
   [:div
    [:h1 [:a {:href "/it-aint-necessarily-so/"} "It ain't necessarily so"]]
    [tabs current]
-   content
-   [:a {:href "/it-aint-necessarily-so/slides.html"} "Slides"]])
+   content])
 
 (defn synthesis [handle! state-atom]
   (frame :synthesis [synthesis/render handle! @state-atom]))
@@ -38,6 +36,3 @@
 
 (defn composition [handle! state-atom]
   (frame :composition [composition/render handle! @state-atom]))
-
-(defn reference [handle! state-atom]
-  (frame :reference [reference/render handle! @state-atom]))
