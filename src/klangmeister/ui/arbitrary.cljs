@@ -10,18 +10,16 @@
   {:phrase
    ["A melody chosen randomly sounds a bit... weird."
     "(defn arbitrary-pitch
-  \"Choose a random pitch from 0 to 7.\"
+  \"Choose a random pitch from 0 to 2000hz.\"
   [history]
-  (rand 7))
+  (rand 2000))
 
 (defn arbitrary-duration
   \"Choose a random duration from 0 to 1.\"
   [history]
   (rand 1))
 
-(->>
-  (melody-with arbitrary-duration arbitrary-pitch)
-  (where :pitch (comp equal C major)))"]})
+(melody-with arbitrary-duration arbitrary-pitch)"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]

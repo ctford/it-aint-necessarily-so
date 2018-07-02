@@ -8,7 +8,7 @@
 
 (def steps
   {:phrase
-   ["A melody composed based on the frequencies that pitches and durations occur can sound nice sometimes, but usually lacks life."
+   ["A melody composed based on the probability of different pitches lacks life."
     "(defn weighted-pitch
   \"Choose a pitch based on how often they occur.\"
   [history]
@@ -21,7 +21,7 @@
 
 (->>
   (melody-with weighted-duration weighted-pitch)
-  (where :pitch (comp equal C major solfege)))"]})
+  (where :pitch (comp equal A major solfege)))"]})
 
 (defn render-one [k handle! state]
   (let [[text code] (steps k)]
