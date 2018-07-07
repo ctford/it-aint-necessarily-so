@@ -34,13 +34,13 @@
      :component-did-mount (editor-did-mount target text handle!)}))
 
 (defn render [target text handle! state]
-  (let [{:keys [error doc]} (target state)
-        [function docstring example] doc
-        ]
+  (let [{:keys [error doc entropy]} (target state)
+        [function docstring example] doc]
     [:div
      {:class (str "editor" (if error " error" ""))}
      [editor target text handle!]
      [:div {:class "doc"}
+      (when entropy [:div (str entropy " bits of entropy.")])
       (when doc [:div (concat function ": " docstring)])
       (when doc [:div {:class "example"} example])
                             ]

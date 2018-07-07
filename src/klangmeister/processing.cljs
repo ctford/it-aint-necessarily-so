@@ -6,6 +6,7 @@
     [klangmeister.sound.instruments :as instrument]
     [klangmeister.actions :as action]
     [klangmeister.framework :as framework]
+    [klangmeister.so.necessarily :as so]
     [ajax.core :as ajax]
     [leipzig.melody :as melody]))
 
@@ -52,6 +53,7 @@
       (-> state
           (assoc-in [pane :error] nil)
           (assoc-in [pane :value] value)
+          (assoc-in [pane :entropy] (so/entropy value))
           (assoc-in [pane :text] expr-str)))))
 
 (extend-protocol framework/Action
