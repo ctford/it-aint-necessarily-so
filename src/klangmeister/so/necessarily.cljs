@@ -153,7 +153,7 @@
       [a])))
 
 (defn with-metric-entropy [[a b & notes]]
-  (let [a-entropy (or (:metric-entropy a) (metric-probabilities (mod (:time a) 4)))
+  (let [a-entropy (or (:metric-entropy a) (metric-probabilities (:duration a)))
         a (assoc a :metric-entropy a-entropy)]
     (if b
       (let [b-entropy (-> metric-tendencies (get (mod (:time a) 4)) (get (mod (:time b) 4)))]
