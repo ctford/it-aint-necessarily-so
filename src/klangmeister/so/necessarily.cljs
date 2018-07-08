@@ -145,8 +145,8 @@
 
 (defn with-metric-entropy [[a b & notes]]
  (if b
-   (let [b-entropy (-> metric-tendencies (get (:pitch a)) (get (:pitch b)))]
-     (cons a (with-metric-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
+   (let [b-entropy (-> metric-tendencies (get (mod (:time a) 4)) (get (mod (:time b) 4)))]
+     (cons a (with-metric-entropy (cons (assoc b :metric-entropy b-entropy) notes))))
    [a]))
 
 (defn with-entropy [notes]
