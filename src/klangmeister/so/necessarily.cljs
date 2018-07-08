@@ -82,31 +82,6 @@
   (let [total (->> weights vals (reduce +))]
     (choose-with (rand total) (seq weights))))
 
-(defn with-pitch-entropy [notes]
- (->> notes
-      (all :pitch-entropy 2)))
-
-(defn with-metric-entropy [notes]
- (->> notes
-      (all :metric-entropy 3)))
-
-(defn with-entropy [notes]
-  (->> notes
-       with-pitch-entropy
-       with-metric-entropy))
-
-(defn melody-with
-  "Make a melody using pitch and duration generators."
-  [duration-generator pitch-generator]
-  (->>
-    (generate pitch-generator [(select-from pitch-probabilities)])
-    (phrase (generate duration-generator [3.75 0.25]))
-    (take-while #(<= (+ (:time %) (:duration %)) 8))
-    (times 2)
-    with-closure
-    with-stress
-    with-entropy
-    (tempo (bpm 90))))
 
 (def pitch-probabilities
   {:do  19.5,
@@ -129,10 +104,6 @@
    1.50  5.4,
    2.00  7.4,
    3.00  0.7})
-
-(comment
-  (live/play
-    (melody-with weighted-duration weighted-pitch)))
 
 (def pitch-tendencies ; major, p158-159.
   {:do  {:do 26.42, :do#  0.06, :re 21.70, :re#  0.17, :mi 15.27, :fa  1.62, :fa#  0.10, :so 10.22,             :la  6.49,             :ti 17.95}
@@ -166,9 +137,38 @@
    3.50 {                                                                                                                                         3.75  50, 4.00 2147}
    3.75 {                                                                                                                                                   4.00  277}})
 
+(defn with-pitch-entropy [[a b & notes]]
+ (if b
+   (let [b-entropy (-> pitch-tendencies (get (:pitch a)) (get (:pitch b)))]
+     (cons a (with-pitch-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
+   [a]))
+
+(defn with-metric-entropy [notes]
+ (->> notes
+      (all :metric-entropy 3)))
+
+(defn with-entropy [notes]
+  (->> notes
+       with-pitch-entropy
+       with-metric-entropy))
+
+(defn melody-with
+  "Make a melody using pitch and duration generators."
+  [duration-generator pitch-generator]
+  (->>
+    (generate pitch-generator [(select-from pitch-probabilities)])
+    (phrase (generate duration-generator [3.75 0.25]))
+    (take-while #(<= (+ (:time %) (:duration %)) 8))
+    (times 2)
+    with-closure
+    with-stress
+    with-entropy
+    (tempo (bpm 90))))
+
 (defn entropy [notes]
-  {:pitch-entropy (->> notes (map :pitch-entropy)
+  {:pitch-entropy (->> notes
+                       (map :pitch-entropy)
                        (reduce (fnil + 0 0)))
    :metric-entropy (->> notes
-                        (map :metric-entropy)
-                        (reduce (fnil + 0 0)))})
+                        #_(map :metric-entropy)
+                        #_(reduce (fnil + 0 0)))})

@@ -40,8 +40,8 @@
      {:class (str "editor" (if error " error" ""))}
      [editor target text handle!]
      [:div {:class "doc"}
-      (when pitch-entropy [:div (str pitch-entropy " bits of pitch entropy.")])
-      (when metric-entropy [:div (str metric-entropy " bits of metric entropy.")])
+      (when (and (not doc) pitch-entropy) [:div (str pitch-entropy " bits of pitch entropy.")])
+      (when (and (not doc) metric-entropy) [:div (str metric-entropy " bits of metric entropy.")])
       (when doc [:div (concat function ": " docstring)])
       (when doc [:div {:class "example"} example])
                             ]

@@ -46,8 +46,7 @@
                                   eval/uate
                                   (check too-many?)
                                   (check well-formed?))
-        {:keys [pitch-entropy metric-entropy]} (so/entropy value)
-        ]
+        {:keys [pitch-entropy metric-entropy]} (so/entropy value)]
     (if error
       (-> state
           (assoc-in [pane :error] error)
