@@ -40,6 +40,7 @@
      {:class (str "editor" (if error " error" ""))}
      [editor target text handle!]
      [:div {:class "doc"}
+      (when (not doc) [:div (str (count value) " notes.")])
       (when (and (not doc) pitch-entropy) [:div (str pitch-entropy " bits of pitch entropy.")])
       (when (and (not doc) metric-entropy) [:div (str metric-entropy " bits of metric entropy.")])
       (when doc [:div (concat function ": " docstring)])

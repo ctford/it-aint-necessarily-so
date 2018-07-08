@@ -172,5 +172,5 @@
                        (map :pitch-entropy)
                        (reduce (fnil + 0 0)))
    :metric-entropy (->> notes
-                        #_(map :metric-entropy)
-                        #_(reduce (fnil + 0 0)))})
+                        (map :metric-entropy)
+                        (reduce (fnil + 0 0)))})
