@@ -137,9 +137,16 @@
    3.50 {                                                                                                                                         3.75  50, 4.00 2147}
    3.75 {                                                                                                                                                   4.00  277}})
 
+
+(defn log2 [n]
+  (/ (Math/log n) (Math/log 2)))
+
+(defn percentage->bits [x]
+  (-> x (/ 100) log2 -))
+
 (defn with-pitch-entropy [[a b & notes]]
  (if b
-   (let [b-entropy (-> pitch-tendencies (get (:pitch a)) (get (:pitch b)))]
+   (let [b-entropy (-> pitch-tendencies (get (:pitch a)) (get (:pitch b)) percentage->bits)]
      (cons a (with-pitch-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
    [a]))
 
