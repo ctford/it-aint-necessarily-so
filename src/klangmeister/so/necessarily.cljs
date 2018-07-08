@@ -177,7 +177,7 @@
 (defn entropy [notes]
   {:pitch-entropy (->> notes
                        (map :pitch-entropy)
-                       (reduce (fnil + 0 0)))
+                       (reduce (fnil + js/Infinity js/Infinity)))
    :metric-entropy (->> notes
                         (map :metric-entropy)
-                        (reduce (fnil + 0 0)))})
+                        (reduce (fnil + js/Infinity js/Infinity)))})
