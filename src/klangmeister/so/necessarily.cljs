@@ -1,5 +1,5 @@
 (ns klangmeister.so.necessarily
-  (:require [leipzig.melody :refer [tempo where times duration with after then bpm]]
+  (:require [leipzig.melody :refer [tempo all where times duration with after then bpm]]
             [leipzig.scale :refer [A E C minor major scale high low from]]))
 
 (defn rhythm
@@ -82,6 +82,19 @@
   (let [total (->> weights vals (reduce +))]
     (choose-with (rand total) (seq weights))))
 
+(defn with-pitch-entropy [notes]
+ (->> notes
+      (all :pitch-entropy 2)))
+
+(defn with-metric-entropy [notes]
+ (->> notes
+      (all :metric-entropy 3)))
+
+(defn with-entropy [notes]
+  (->> notes
+       with-pitch-entropy
+       with-metric-entropy))
+
 (defn melody-with
   "Make a melody using pitch and duration generators."
   [duration-generator pitch-generator]
@@ -92,6 +105,7 @@
     (times 2)
     with-closure
     with-stress
+    with-entropy
     (tempo (bpm 90))))
 
 (def pitch-probabilities
@@ -151,5 +165,10 @@
    3.25 {                                                                                                                              3.50   23,           4.00    3}
    3.50 {                                                                                                                                         3.75  50, 4.00 2147}
    3.75 {                                                                                                                                                   4.00  277}})
+
 (defn entropy [notes]
-  (count notes))
+  {:pitch-entropy (->> notes (map :pitch-entropy)
+                       (reduce (fnil + 0 0)))
+   :metric-entropy (->> notes
+                        (map :metric-entropy)
+                        (reduce (fnil + 0 0)))})

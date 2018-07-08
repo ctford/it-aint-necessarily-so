@@ -45,7 +45,9 @@
   (let [{:keys [value error]} (-> expr-str
                                   eval/uate
                                   (check too-many?)
-                                  (check well-formed?))]
+                                  (check well-formed?))
+        {:keys [pitch-entropy metric-entropy]} (so/entropy value)
+        ]
     (if error
       (-> state
           (assoc-in [pane :error] error)
@@ -53,7 +55,8 @@
       (-> state
           (assoc-in [pane :error] nil)
           (assoc-in [pane :value] value)
-          (assoc-in [pane :entropy] (so/entropy value))
+          (assoc-in [pane :pitch-entropy] pitch-entropy)
+          (assoc-in [pane :metric-entropy] metric-entropy)
           (assoc-in [pane :text] expr-str)))))
 
 (extend-protocol framework/Action

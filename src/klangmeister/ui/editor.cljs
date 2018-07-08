@@ -34,13 +34,14 @@
      :component-did-mount (editor-did-mount target text handle!)}))
 
 (defn render [target text handle! state]
-  (let [{:keys [error doc entropy]} (target state)
+  (let [{:keys [error doc pitch-entropy metric-entropy]} (target state)
         [function docstring example] doc]
     [:div
      {:class (str "editor" (if error " error" ""))}
      [editor target text handle!]
      [:div {:class "doc"}
-      (when entropy [:div (str entropy " bits of entropy.")])
+      (when pitch-entropy [:div (str pitch-entropy " bits of pitch entropy.")])
+      (when metric-entropy [:div (str metric-entropy " bits of metric entropy.")])
       (when doc [:div (concat function ": " docstring)])
       (when doc [:div {:class "example"} example])
                             ]
