@@ -143,9 +143,11 @@
      (cons a (with-pitch-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
    [a]))
 
-(defn with-metric-entropy [notes]
- (->> notes
-      (all :metric-entropy 3)))
+(defn with-metric-entropy [[a b & notes]]
+ (if b
+   (let [b-entropy (-> metric-tendencies (get (:pitch a)) (get (:pitch b)))]
+     (cons a (with-metric-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
+   [a]))
 
 (defn with-entropy [notes]
   (->> notes
@@ -170,5 +172,5 @@
                        (map :pitch-entropy)
                        (reduce (fnil + 0 0)))
    :metric-entropy (->> notes
-                        #_(map :metric-entropy)
-                        #_(reduce (fnil + 0 0)))})
+                        (map :metric-entropy)
+                        (reduce (fnil + 0 0)))})
