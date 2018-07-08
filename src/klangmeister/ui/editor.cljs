@@ -34,7 +34,7 @@
      :component-did-mount (editor-did-mount target text handle!)}))
 
 (defn render [target text handle! state]
-  (let [{:keys [error doc pitch-entropy metric-entropy]} (target state)
+  (let [{:keys [error doc pitch-entropy metric-entropy value]} (target state)
         [function docstring example] doc]
     [:div
      {:class (str "editor" (if error " error" ""))}
