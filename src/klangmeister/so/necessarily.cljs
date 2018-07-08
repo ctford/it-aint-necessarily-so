@@ -145,16 +145,20 @@
   (-> x (/ 100) log2 -))
 
 (defn with-pitch-entropy [[a b & notes]]
- (if b
-   (let [b-entropy (-> pitch-tendencies (get (:pitch a)) (get (:pitch b)) percentage->bits)]
-     (cons a (with-pitch-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
-   [a]))
+  (let [a-entropy (or (:pitch-entropy a) (pitch-probabilities (:pitch a)))
+        a (assoc a :pitch-entropy a-entropy)]
+    (if b
+      (let [b-entropy (-> pitch-tendencies (get (:pitch a)) (get (:pitch b)) percentage->bits)]
+        (cons a (with-pitch-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
+      [a])))
 
 (defn with-metric-entropy [[a b & notes]]
- (if b
-   (let [b-entropy (-> metric-tendencies (get (mod (:time a) 4)) (get (mod (:time b) 4)))]
-     (cons a (with-metric-entropy (cons (assoc b :metric-entropy b-entropy) notes))))
-   [a]))
+  (let [a-entropy (or (:metric-entropy a) (metric-probabilities (mod (:time a) 4)))
+        a (assoc a :metric-entropy a-entropy)]
+    (if b
+      (let [b-entropy (-> metric-tendencies (get (mod (:time a) 4)) (get (mod (:time b) 4)))]
+        (cons a (with-metric-entropy (cons (assoc b :metric-entropy b-entropy) notes))))
+      [a])))
 
 (defn with-entropy [notes]
   (->> notes
@@ -179,5 +183,5 @@
                        (map :pitch-entropy)
                        (reduce (fnil + js/Infinity js/Infinity)))
    :metric-entropy (->> notes
-                        (map :metric-entropy)
-                        (reduce (fnil + js/Infinity js/Infinity)))})
+                        #_(map :metric-entropy)
+                        #_(reduce (fnil + js/Infinity js/Infinity)))})
