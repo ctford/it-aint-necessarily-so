@@ -183,5 +183,5 @@
                        (map :pitch-entropy)
                        (reduce (fnil + js/Infinity js/Infinity)))
    :metric-entropy (->> notes
-                        #_(map :metric-entropy)
-                        #_(reduce (fnil + js/Infinity js/Infinity)))})
+                        (map :metric-entropy)
+                        (reduce (fnil + js/Infinity js/Infinity)))})
