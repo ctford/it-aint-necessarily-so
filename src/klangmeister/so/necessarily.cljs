@@ -41,19 +41,6 @@
         :do+ 7}
        k k))
 
-(def pitch-probabilities
-  {:do  19.5
-   :do#  0.1
-   :re  17.8
-   :re#  0.2
-   :mi  21.6
-   :fa  11.3
-   :fa# 0.70
-   :so  16.5
-   :la  7.30
-   :la#  0.2
-   :ti   4.8})
-
 (defn generate
   [generator history]
   (let [value (generator history)
