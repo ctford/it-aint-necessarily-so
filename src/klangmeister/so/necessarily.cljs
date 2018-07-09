@@ -49,8 +49,8 @@
 
 (defn with-closure [notes]
   (let [anticipation (->> (phrase [0.5 2] [:re :do])
-                          (having :metric-entropy [1.5 1.5])
-                          (having :pitch-entropy [1.5 1.5]))
+                          (having :metric-entropy [0.5 0.5])
+                          (having :pitch-entropy [3 3]))
         anticipation-onset (- (duration notes) (duration anticipation))]
     (->> notes
          (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
@@ -178,7 +178,7 @@
     with-entropy
     with-closure
     with-stress
-    #_(tempo (bpm 90))))
+    (tempo (bpm 90))))
 
 (defn nil+ [x y]
   (when (and x y) (+ x y)))

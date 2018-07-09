@@ -45,7 +45,6 @@
       (when (not doc) [:div (str (count value) " notes.")])
       (when (and (not doc) pitch-entropy) [:div  (str (gstring/format "%.2f" pitch-entropy) " bits of pitch entropy.")])
       (when (and (not doc) metric-entropy) [:div (str (gstring/format "%.2f" metric-entropy) " bits of metric entropy.")])
-      [:div (str  value)]
       (when doc [:div (concat function ": " docstring)])
       (when doc [:div {:class "example"} example])
                             ]
