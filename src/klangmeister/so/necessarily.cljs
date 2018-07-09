@@ -172,9 +172,9 @@
     (phrase (generate duration-generator [3.75 0.25]))
     (take-while #(<= (+ (:time %) (:duration %)) 8))
     (times 2)
+    with-entropy
     with-closure
     with-stress
-    with-entropy
     #_(tempo (bpm 90))))
 
 (defn nil+ [x y]
