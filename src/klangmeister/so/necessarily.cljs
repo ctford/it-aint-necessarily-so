@@ -142,13 +142,19 @@
         (cons a (with-pitch-entropy (cons (assoc b :pitch-entropy b-entropy) notes))))
       [a])))
 
+(defn position [x]
+  (let [raw (mod x 4)]
+    (if (zero? raw)
+      4.0
+      raw)))
+
 (defn with-metric-entropy [[a b & notes]]
   (let [a-entropy (or (:metric-entropy a) (percentage->bits (metric-probabilities (:duration a))))
         a (assoc a :metric-entropy a-entropy)]
     (if b
       (let [b-entropy (-> metric-tendencies
-                          (get (mod (:time a) 4))
-                          (get (+ 0.25 (mod (:time b) 4)))
+                          (get (position (:time a)))
+                          (get (position (:time b)))
                           percentage->bits)]
         (cons a (with-metric-entropy (cons (assoc b :metric-entropy b-entropy) notes))))
       [a])))
