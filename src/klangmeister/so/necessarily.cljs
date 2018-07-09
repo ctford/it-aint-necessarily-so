@@ -165,10 +165,13 @@
     with-entropy
     (tempo (bpm 90))))
 
+(defn nil+ [x y]
+  (when (and x y) (+ x y)))
+
 (defn entropy [notes]
   {:pitch-entropy (->> notes
                        (map :pitch-entropy)
-                       (reduce (fnil + js/Infinity js/Infinity)))
+                       (reduce nil+))
    :metric-entropy (->> notes
                         (map :metric-entropy)
-                        (reduce (fnil + js/Infinity js/Infinity)))})
+                        (reduce nil+))})
