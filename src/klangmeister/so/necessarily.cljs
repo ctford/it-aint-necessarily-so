@@ -148,7 +148,7 @@
     (if b
       (let [b-entropy (-> metric-tendencies
                           (get (mod (:time a) 4))
-                          (get (mod (:time b) 4))
+                          (get (+ 0.25 (mod (:time b) 4)))
                           percentage->bits)]
         (cons a (with-metric-entropy (cons (assoc b :metric-entropy b-entropy) notes))))
       [a])))
