@@ -2,7 +2,9 @@
   (:require
     [klangmeister.actions :as action]
     [klangmeister.compile.eval :as eval]
-    [reagent.core :as reagent]))
+    [reagent.core :as reagent]
+    [goog.string :as gstring]
+    [goog.string.format]))
 
 (defn current-token [editor]
   (-> editor
@@ -41,8 +43,8 @@
      [editor target text handle!]
      [:div {:class "doc"}
       (when (not doc) [:div (str (count value) " notes.")])
-      (when (and (not doc) pitch-entropy) [:div (str pitch-entropy " bits of pitch entropy.")])
-      (when (and (not doc) metric-entropy) [:div (str metric-entropy " bits of metric entropy.")])
+      (when (and (not doc) pitch-entropy) [:div  (str (gstring/format "%.2f" pitch-entropy) " bits of pitch entropy.")])
+      (when (and (not doc) metric-entropy) [:div (str (gstring/format "%.2f" metric-entropy) " bits of metric entropy.")])
       (when doc [:div (concat function ": " docstring)])
       (when doc [:div {:class "example"} example])
                             ]
