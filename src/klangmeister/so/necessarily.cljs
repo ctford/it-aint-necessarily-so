@@ -51,8 +51,10 @@
   (let [anticipation (phrase [0.5 2] [:re :do])
         anticipation-onset (- (duration notes) (duration anticipation))]
     (->> notes
-       (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
-       (with (after anticipation-onset anticipation)))))
+         (having :metric-entropy [1.5 1.5])
+         (having :pitch-entropy [1.5 1.5])
+         (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
+         (with (after anticipation-onset anticipation)))))
 
 (defn with-stress [notes]
   (map
