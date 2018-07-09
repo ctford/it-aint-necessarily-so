@@ -132,7 +132,7 @@
   (-> x (/ 100) log2 -))
 
 (defn with-pitch-entropy [[a b & notes]]
-  (let [a-entropy (or (:pitch-entropy a) (pitch-probabilities (:pitch a)))
+  (let [a-entropy (or (:pitch-entropy a) (percentage->bits (pitch-probabilities (:pitch a))))
         a (assoc a :pitch-entropy a-entropy)]
     (if b
       (let [b-entropy (-> pitch-tendencies
@@ -143,7 +143,7 @@
       [a])))
 
 (defn with-metric-entropy [[a b & notes]]
-  (let [a-entropy (or (:metric-entropy a) (metric-probabilities (:duration a)))
+  (let [a-entropy (or (:metric-entropy a) (percentage->bits (metric-probabilities (:duration a))))
         a (assoc a :metric-entropy a-entropy)]
     (if b
       (let [b-entropy (-> metric-tendencies
