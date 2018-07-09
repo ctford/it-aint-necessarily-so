@@ -169,7 +169,7 @@
     with-closure
     with-stress
     with-entropy
-    (tempo (bpm 90))))
+    #_(tempo (bpm 90))))
 
 (defn nil+ [x y]
   (when (and x y) (+ x y)))
