@@ -48,11 +48,11 @@
     (cons value (lazy-seq (generate generator updated-history)))))
 
 (defn with-closure [notes]
-  (let [anticipation (phrase [0.5 2] [:re :do])
+  (let [anticipation (->> (phrase [0.5 2] [:re :do])
+                          (having :metric-entropy [1.5 1.5])
+                          (having :pitch-entropy [1.5 1.5]))
         anticipation-onset (- (duration notes) (duration anticipation))]
     (->> notes
-         (having :metric-entropy [1.5 1.5])
-         (having :pitch-entropy [1.5 1.5])
          (take-while #(<= (+ (:time %) (:duration %)) anticipation-onset))
          (with (after anticipation-onset anticipation)))))
 
