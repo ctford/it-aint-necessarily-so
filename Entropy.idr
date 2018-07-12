@@ -40,5 +40,8 @@ la = followedBy 5
 ti : (xs : List Nat) -> Probability (the (List Nat) [6]) (model 6 xs)
 ti = followedBy 6
 
-melody : Probability (the (List Nat) [2, 3, 4, 4, 0]) 18
-melody = begin >>= doe >>= so >>= so >>= fa >>= mi
+melody : Probability (the (List Nat) [3, 2, 1, 0]) 10
+melody = begin >>= doe >>= re >>= mi >>= fa
+
+unconventionalMelody : Probability (the (List Nat) [3, 2, 6, 0]) 15
+unconventionalMelody = begin >>= doe >>= ti >>= mi >>= fa
