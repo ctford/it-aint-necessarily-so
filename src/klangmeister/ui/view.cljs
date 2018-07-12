@@ -3,7 +3,7 @@
     [klangmeister.ui.arbitrary :as arbitrary]
     [klangmeister.ui.composition :as composition]
     [klangmeister.ui.about :as about]
-    [klangmeister.ui.synthesis-tutorial :as synthesis]))
+    [klangmeister.ui.contextual :as contextual]))
 
 (defn link [current this href title]
   (if (= current this)
@@ -15,7 +15,7 @@
    [:ul
     [:li (link current :arbitrary "/it-aint-necessarily-so/arbitrary" "Arbitrary")]
     [:li (link current :composition "/it-aint-necessarily-so/composition" "Weighted")]
-    [:li (link current :synthesis "/it-aint-necessarily-so/synthesis" "Contextual")]
+    [:li (link current :contextual "/it-aint-necessarily-so/contextual" "Contextual")]
     [:li (link current :reference "/it-aint-necessarily-so/slides.html" "Slides")]
     [:li (link current :about "/it-aint-necessarily-so/about" "About")]]])
 
@@ -25,8 +25,8 @@
    [tabs current]
    content])
 
-(defn synthesis [handle! state-atom]
-  (frame :synthesis [synthesis/render handle! @state-atom]))
+(defn contextual [handle! state-atom]
+  (frame :contextual [contextual handle! @state-atom]))
 
 (defn about [handle! state-atom]
   (frame :about [about/render handle! @state-atom]))

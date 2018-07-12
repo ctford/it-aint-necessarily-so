@@ -21,7 +21,7 @@
                                                                (session/put! :current-page view/about))
 
 (secretary/defroute "/it-aint-necessarily-so/arbitrary"    [] (session/put! :current-page view/arbitrary))
-(secretary/defroute "/it-aint-necessarily-so/synthesis"    [] (session/put! :current-page view/synthesis))
+(secretary/defroute "/it-aint-necessarily-so/contextual"    [] (session/put! :current-page view/contextual))
 (secretary/defroute "/it-aint-necessarily-so/composition" [] (session/put! :current-page view/composition))
 (secretary/defroute "/it-aint-necessarily-so/about"        [] (session/put! :current-page view/about))
 

@@ -1,4 +1,4 @@
-(ns klangmeister.ui.synthesis-tutorial
+(ns klangmeister.ui.contextual
   (:require [klangmeister.ui.editor :as editor]
             [klangmeister.actions :as action]))
 
