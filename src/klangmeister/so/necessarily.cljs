@@ -2,7 +2,7 @@
   (:require [leipzig.melody :refer [tempo all where times duration with after then bpm]]
             [leipzig.scale :refer [A E C minor major scale high low from]]))
 
-(def negligible 0.004)
+(def negligible 0.001)
 
 (defn rhythm
   "Translates a sequence of durations into a rhythm.
@@ -154,12 +154,12 @@
       raw)))
 
 (defn with-metric-entropy [[a b & notes]]
-  (let [a-entropy (or (:metric-entropy a) (percentage->bits (metric-probabilities (:duration a))))
+  (let [a-entropy (or (:metric-entropy a) (percentage->bits (metric-probabilities (:duration a) negligible)))
         a (assoc a :metric-entropy a-entropy)]
     (if b
       (let [b-entropy (-> metric-tendencies
                           (get (mod (:time a) 4))
-                          (get (position (:time b)))
+                          (get (position (:time b)) negligible)
                           percentage->bits)]
         (cons a (with-metric-entropy (cons (assoc b :metric-entropy b-entropy) notes))))
       [a])))
