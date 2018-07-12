@@ -22,7 +22,7 @@
 
 (secretary/defroute "/it-aint-necessarily-so/arbitrary"    [] (session/put! :current-page view/arbitrary))
 (secretary/defroute "/it-aint-necessarily-so/contextual"    [] (session/put! :current-page view/contextual))
-(secretary/defroute "/it-aint-necessarily-so/composition" [] (session/put! :current-page view/composition))
+(secretary/defroute "/it-aint-necessarily-so/weighted" [] (session/put! :current-page view/weighted))
 (secretary/defroute "/it-aint-necessarily-so/about"        [] (session/put! :current-page view/about))
 
 (def handle!

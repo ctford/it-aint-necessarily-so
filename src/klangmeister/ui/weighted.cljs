@@ -1,4 +1,4 @@
-(ns klangmeister.ui.composition
+(ns klangmeister.ui.weighted
   (:require [klangmeister.ui.editor :as editor]
             [klangmeister.actions :as action]))
 

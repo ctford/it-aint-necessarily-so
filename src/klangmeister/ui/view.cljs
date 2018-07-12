@@ -1,7 +1,7 @@
 (ns klangmeister.ui.view
   (:require
     [klangmeister.ui.arbitrary :as arbitrary]
-    [klangmeister.ui.composition :as composition]
+    [klangmeister.ui.weighted :as weighted]
     [klangmeister.ui.about :as about]
     [klangmeister.ui.contextual :as contextual]))
 
@@ -14,7 +14,7 @@
   [:div {:id "menu"}
    [:ul
     [:li (link current :arbitrary "/it-aint-necessarily-so/arbitrary" "Arbitrary")]
-    [:li (link current :composition "/it-aint-necessarily-so/composition" "Weighted")]
+    [:li (link current :composition "/it-aint-necessarily-so/weighted" "Weighted")]
     [:li (link current :contextual "/it-aint-necessarily-so/contextual" "Contextual")]
     [:li (link current :reference "/it-aint-necessarily-so/slides.html" "Slides")]
     [:li (link current :about "/it-aint-necessarily-so/about" "About")]]])
@@ -34,5 +34,5 @@
 (defn arbitrary [handle! state-atom]
   (frame :arbitrary [arbitrary/render handle! @state-atom]))
 
-(defn composition [handle! state-atom]
-  (frame :composition [composition/render handle! @state-atom]))
+(defn weighted [handle! state-atom]
+  (frame :composition [weighted/render handle! @state-atom]))
