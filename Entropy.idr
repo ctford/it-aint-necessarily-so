@@ -1,4 +1,5 @@
 module Entropy
+import Data.List
 
 %default total
 
@@ -8,8 +9,11 @@ data Probability : a -> Nat -> Type where
 begin : Probability [] 0
 begin = Occurred []
 
-(>>=) : {x : List Nat} -> Probability x bits -> (List Nat -> Probability y bits') -> Probability (y <+> x) (bits + bits')
-(>>=) {x} {y} _ _ = Occurred (y <+> x)
+(>>=) : {xs : List Nat} ->
+        Probability xs bits ->
+        (List Nat -> Probability ys bits') ->
+        Probability (ys <+> xs) (bits + bits')
+(>>=) {xs} {ys} _ _ = Occurred (ys <+> xs)
 
 -- Imagine this gives some kind of probabilistic score.
 model : Nat -> List Nat -> Nat
