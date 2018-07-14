@@ -191,14 +191,22 @@
 
                 <section data-markdown>
                     <script type="text/template">
-                        ## An idea: Probabilistic types
+                        ## Finite State Music
 
                         ```
-                        data Probability : a -> Nat -> Type where
-                          Occurred : (x : a) -> Probability x bits
+                        data Solfege = Do | Re | Mi | Fa | So | La | Ti
 
-                        melody : Probability [2, 3, 4, 4, 0] 18
-                        melody = begin >>= doe >>= so >>= so >>= fa >>= mi
+                        data Melody : Nat -> Solfege -> Solfege -> Type where
+                          Then  : (b : Solfege) -> Melody (entropy a b) a b
+                          (>>=) : Melody bits a b ->
+                                  ((bits : Nat) -> Melody bits' b c) ->
+                                  Melody (bits + bits') a c
+
+                        conventional : Melody 8 Do So
+                        conventional = do Then Re; Then Mi; Then Fa; Then So
+
+                        unconventional : Melody 12 Do So
+                        unconventional = do Then Ti; Then Mi; Then Fa; Then So
                         ```
                     </script>
                 </section>
@@ -207,7 +215,8 @@
                     <script type="text/template">
                         ## Conclusion
 
-                        * A naive application of type theory leads to innovative states being unrepresentable.
+                        * If we're not careful with our types, innovative states might be unrepresentable...
+                        * ...or unusual states might be unremarkable.
                         * Dependent types might be able to help in domains where states are conventional/unconventional...
                         * ...but we would have to work at it.
                         * Huron's 'Sweet Anticipation' is really cool.
@@ -218,6 +227,7 @@
                     <script type="text/template">
                     ## References
                     * [The Haskell School of Expression](http://www.cs.yale.edu/homes/hudak/SOE/) by Paul Hudak.
+                    * [Idris](https://www.idris-lang.org/) by Edwin Brady.
                     * [Leipzig](https://github.com/ctford/leipzig) by Chris Ford.
                     * [Mezzo](https://github.com/DimaSamoz/mezzo) by Dima Samoz.
                     * [Overtone](http://overtone.github.io/) by Sam Aaron and Jeff Rose.
