@@ -7,13 +7,9 @@ import Data.List
 
 %access public export
 
-data Solfege = Beginning | End | Do | Re | Mi | Fa | So | La | Ti
+data Solfege = Do | Re | Mi | Fa | So | La | Ti
 
 entropy : Solfege -> Solfege -> Nat
-entropy Beginning Do = 1
-entropy Beginning _  = 2
-entropy Do End       = 1
-entropy _ End        = 2
 entropy Do Do = 1
 entropy Do Re = 2
 entropy Re Do = 2
@@ -53,14 +49,14 @@ mi = Then Mi
 so : Melody (entropy a So) a So
 so = Then So
 
+fa : Melody (entropy a Fa) a Fa
+fa = Then Fa
+
 ti : Melody (entropy a Ti) a Ti
 ti = Then Ti
 
-end : Melody (entropy a End) a End
-end = Then End
+conventional : Melody 9 Do Fa
+conventional = do re; mi; so; fa
 
-conventional : Melody 10 Beginning End
-conventional = do doe; re; mi; so; end
-
-unconventional : Melody 12 Beginning End
-unconventional = do doe; ti; mi; so; end
+unconventional : Melody 11 Do Fa
+unconventional = do ti; mi; so; fa
