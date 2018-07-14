@@ -174,7 +174,7 @@
                         ## Mezzo
 
                         This compiles:
-                        ```
+                        ```haskell
                           comp = defScore $ start $ melody :| c :| d :| e :| f :>> g
                         ```
 
@@ -182,7 +182,7 @@
 
                         This doesn't, as leaps from c to b aren't "allowed":
 
-                        ```
+                        ```haskell
                           comp = defScore $ start $ melody :| c :| b :| e :| f :>> g
                         ```
                     </script>
@@ -211,7 +211,7 @@
                     <script type="text/template">
                         ## Finite State Music
 
-                        ```
+                        ```haskell
                         data Solfege = Do | Re | Mi | Fa | So | La | Ti
 
                         data Melody : Nat -> Solfege -> Solfege -> Type where
@@ -219,7 +219,9 @@
                           (>>=) : Melody bits a b ->
                                   ((bits : Nat) -> Melody bits' b c) ->
                                   Melody (bits + bits') a c
+                        ```
 
+                        ```haskell
                         conventional : Melody 8 Do So
                         conventional = do Then Re; Then Mi; Then Fa; Then So
 
