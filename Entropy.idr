@@ -9,55 +9,55 @@ import Data.List
 
 data Solfege = Beginning | End | Do | Re | Mi | Fa | So | La | Ti
 
-surprise : Solfege -> Solfege -> Nat
-surprise Beginning Do = 1
-surprise Beginning _  = 2
-surprise Do End       = 1
-surprise _ End        = 2
-surprise Do Do = 1
-surprise Do Re = 2
-surprise Re Do = 2
-surprise Re Re = 1
-surprise Re Mi = 2
-surprise Mi Re = 2
-surprise Mi Mi = 1
-surprise Mi Fa = 2
-surprise Fa Mi = 2
-surprise Fa Fa = 1
-surprise Fa So = 2
-surprise So Fa = 2
-surprise So So = 1
-surprise So La = 2
-surprise La So = 2
-surprise La La = 1
-surprise La Ti = 2
-surprise Ti La = 2
-surprise Ti Ti = 1
-surprise _ _ = 3
+entropy : Solfege -> Solfege -> Nat
+entropy Beginning Do = 1
+entropy Beginning _  = 2
+entropy Do End       = 1
+entropy _ End        = 2
+entropy Do Do = 1
+entropy Do Re = 2
+entropy Re Do = 2
+entropy Re Re = 1
+entropy Re Mi = 2
+entropy Mi Re = 2
+entropy Mi Mi = 1
+entropy Mi Fa = 2
+entropy Fa Mi = 2
+entropy Fa Fa = 1
+entropy Fa So = 2
+entropy So Fa = 2
+entropy So So = 1
+entropy So La = 2
+entropy La So = 2
+entropy La La = 1
+entropy La Ti = 2
+entropy Ti La = 2
+entropy Ti Ti = 1
+entropy _ _ = 3
 
 data Melody : Nat -> Solfege -> Solfege -> Type where
-  FollowedBy : (s : Solfege) -> Melody (surprise a b) a b
+  Then : (s : Solfege) -> Melody (entropy a b) a b
   (>>=) : Melody bits a b ->
        ((bits : Nat) -> Melody bits' b c) ->
        Melody (bits + bits') a c
 
-doe : Melody (surprise a Do) a Do
-doe = FollowedBy Do
+doe : Melody (entropy a Do) a Do
+doe = Then Do
 
-re : Melody (surprise a Re) a Re
-re = FollowedBy Re
+re : Melody (entropy a Re) a Re
+re = Then Re
 
-mi : Melody (surprise a Mi) a Mi
-mi = FollowedBy Mi
+mi : Melody (entropy a Mi) a Mi
+mi = Then Mi
 
-so : Melody (surprise a So) a So
-so = FollowedBy So
+so : Melody (entropy a So) a So
+so = Then So
 
-ti : Melody (surprise a Ti) a Ti
-ti = FollowedBy Ti
+ti : Melody (entropy a Ti) a Ti
+ti = Then Ti
 
-end : Melody (surprise a End) a End
-end = FollowedBy End
+end : Melody (entropy a End) a End
+end = Then End
 
 conventional : Melody 10 Beginning End
 conventional = do
