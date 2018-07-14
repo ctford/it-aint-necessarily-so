@@ -29,34 +29,16 @@ entropy La La = 1
 entropy La Ti = 2
 entropy Ti La = 2
 entropy Ti Ti = 1
-entropy _ _ = 3
+entropy _ _ = 4
 
 data Melody : Nat -> Solfege -> Solfege -> Type where
-  Then : (s : Solfege) -> Melody (entropy a b) a b
+  Then : (b : Solfege) -> Melody (entropy a b) a b
   (>>=) : Melody bits a b ->
        ((bits : Nat) -> Melody bits' b c) ->
        Melody (bits + bits') a c
 
-doe : Melody (entropy a Do) a Do
-doe = Then Do
+conventional : Melody 8 Do So
+conventional = do Then Re; Then Mi; Then Fa; Then So
 
-re : Melody (entropy a Re) a Re
-re = Then Re
-
-mi : Melody (entropy a Mi) a Mi
-mi = Then Mi
-
-so : Melody (entropy a So) a So
-so = Then So
-
-fa : Melody (entropy a Fa) a Fa
-fa = Then Fa
-
-ti : Melody (entropy a Ti) a Ti
-ti = Then Ti
-
-conventional : Melody 9 Do Fa
-conventional = do re; mi; so; fa
-
-unconventional : Melody 11 Do Fa
-unconventional = do ti; mi; so; fa
+unconventional : Melody 12 Do So
+unconventional = do Then Ti; Then Mi; Then Fa; Then So
