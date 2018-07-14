@@ -60,17 +60,7 @@ end : Melody (entropy a End) a End
 end = Then End
 
 conventional : Melody 10 Beginning End
-conventional = do
-  doe
-  re
-  mi
-  so
-  end
+conventional = do doe; re; mi; so; end
 
 unconventional : Melody 12 Beginning End
-unconventional = do
-  doe
-  ti
-  mi
-  so
-  end
+unconventional = do doe; ti; mi; so; end
