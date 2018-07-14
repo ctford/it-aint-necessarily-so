@@ -1,51 +1,76 @@
-module Entropy
+||| Provide session types derived from specifications.
+module Data.FSM.Entropy
+
 import Data.List
 
 %default total
 
-data Probability : a -> Nat -> Type where
-  Occurred : (x : a) -> Probability x bits
+%access public export
 
-begin : Probability [] 0
-begin = Occurred []
+data Solfege = Beginning | End | Do | Re | Mi | Fa | So | La | Ti
 
-(>>=) : {xs : List Nat} ->
-        Probability xs bits ->
-        (List Nat -> Probability ys bits') ->
-        Probability (ys <+> xs) (bits + bits')
-(>>=) {xs} {ys} _ _ = Occurred (ys <+> xs)
+surprise : Solfege -> Solfege -> Nat
+surprise Beginning Do = 1
+surprise Beginning _  = 2
+surprise Do End       = 1
+surprise _ End        = 2
+surprise Do Do = 1
+surprise Do Re = 2
+surprise Re Do = 2
+surprise Re Re = 1
+surprise Re Mi = 2
+surprise Mi Re = 2
+surprise Mi Mi = 1
+surprise Mi Fa = 2
+surprise Fa Mi = 2
+surprise Fa Fa = 1
+surprise Fa So = 2
+surprise So Fa = 2
+surprise So So = 1
+surprise So La = 2
+surprise La So = 2
+surprise La La = 1
+surprise La Ti = 2
+surprise Ti La = 2
+surprise Ti Ti = 1
+surprise _ _ = 3
 
--- Imagine this gives some kind of probabilistic score.
-model : Nat -> List Nat -> Nat
-model Z xs = 1
-model (S k) xs = S (S k)
+data Melody : Nat -> Solfege -> Solfege -> Type where
+  FollowedBy : (s : Solfege) -> Melody (surprise a b) a b
+  (>>=) : Melody bits a b ->
+       ((bits : Nat) -> Melody bits' b c) ->
+       Melody (bits + bits') a c
 
-followedBy : (x : Nat) -> (xs : List Nat) -> Probability [x] (model x xs)
-followedBy x xs = Occurred [x]
+doe : Melody (surprise a Do) a Do
+doe = FollowedBy Do
 
-doe : (xs : List Nat) -> Probability [the Nat 0] (model 0 xs)
-doe = followedBy 0
+re : Melody (surprise a Re) a Re
+re = FollowedBy Re
 
-re : (xs : List Nat) -> Probability [the Nat 1] (model 1 xs)
-re = followedBy 1
+mi : Melody (surprise a Mi) a Mi
+mi = FollowedBy Mi
 
-mi : (xs : List Nat) -> Probability [the Nat 2] (model 2 xs)
-mi = followedBy 2
+so : Melody (surprise a So) a So
+so = FollowedBy So
 
-fa : (xs : List Nat) -> Probability [the Nat 3] (model 3 xs)
-fa = followedBy 3
+ti : Melody (surprise a Ti) a Ti
+ti = FollowedBy Ti
 
-so : (xs : List Nat) -> Probability [the Nat 4] (model 4 xs)
-so = followedBy 4
+end : Melody (surprise a End) a End
+end = FollowedBy End
 
-la : (xs : List Nat) -> Probability [the Nat 5] (model 5 xs)
-la = followedBy 5
+conventional : Melody 10 Beginning End
+conventional = do
+  doe
+  re
+  mi
+  so
+  end
 
-ti : (xs : List Nat) -> Probability [the Nat 6] (model 6 xs)
-ti = followedBy 6
-
-melody : Probability (the (List Nat) [3, 2, 1, 0]) 10
-melody = begin >>= doe >>= re >>= mi >>= fa
-
-unconventionalMelody : Probability (the (List Nat) [3, 2, 6, 0]) 15
-unconventionalMelody = begin >>= doe >>= ti >>= mi >>= fa
+unconventional : Melody 12 Beginning End
+unconventional = do
+  doe
+  ti
+  mi
+  so
+  end
