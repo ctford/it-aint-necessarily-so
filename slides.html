@@ -214,20 +214,46 @@
 
                         ```haskell
                         data Solfege = Do | Re | Mi | Fa | So | La | Ti
+                        entropy : Solfege -> Solfege -> Nat
+                        -- ...
 
-                        data Melody : Nat -> Solfege -> Solfege -> Type where
-                          Then  : (b : Solfege) -> Melody (entropy a b) a b
-                          (>>=) : Melody bits a b ->
-                                  ((bits : Nat) -> Melody bits' b c) ->
-                                  Melody (bits + bits') a c
+                        data Melody : (Solfege, Solfege) -> (Nat, Nat) -> Type where
+                          Pure   : x -> Melody (x, x) (0, 0)
+
+                          (>>=)  : Melody (w, x) (lower, upper) ->
+                                   (() -> Melody (y, z) (lower', upper')) ->
+                                   Melody (w, z) (entropy x y + lower + lower', entropy x y + upper + upper')
+
+                          Relax  : Melody (x, y) (lower + dl, upper) -> Melody entropy (x, y) (lower, upper + du)
                         ```
+                    </script>
+                </section>
+
+                <section data-markdown>
+                    <script type="text/template">
+                        ## Finite State Music
 
                         ```haskell
-                        conventional : Melody 8 Do So
-                        conventional = do Then Re; Then Mi; Then Fa; Then So
+                        conventional : Melody (Do, So) (8, 16)
+                        conventional = Relax $ do
+                          Pure Do
+                          Pure Re
+                          Pure Mi
+                          Pure Fa
+                          Pure So
 
-                        unconventional : Melody 12 Do So
-                        unconventional = do Then Ti; Then Mi; Then Fa; Then So
+                        unconventional : Melody (Do, So) (12, 24)
+                        unconventional = Relax $ do
+                          Pure Do
+                          Pure Ti
+                          Pure Mi
+                          Pure Fa
+                          Pure So
+
+                        song : Melody (Do, So) (20, 50)
+                        song = Relax $ do
+                          conventional
+                          unconventional
                         ```
                     </script>
                 </section>
