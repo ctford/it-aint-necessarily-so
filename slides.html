@@ -215,7 +215,7 @@
                         ```haskell
                         data Solfege = Do | Re | Mi | Fa | So | La | Ti
                         entropy : Solfege -> Solfege -> Nat
-                        -- ...
+                        ...
 
                         data Melody : (Solfege, Solfege) -> (Nat, Nat) -> Type where
                           Pure   : x -> Melody (x, x) (0, 0)
@@ -249,11 +249,6 @@
                           Pure Mi
                           Pure Fa
                           Pure So
-
-                        song : Melody (Do, So) (20, 50)
-                        song = Relax $ do
-                          conventional
-                          unconventional
                         ```
                     </script>
                 </section>
