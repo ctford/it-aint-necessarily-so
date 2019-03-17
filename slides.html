@@ -214,17 +214,18 @@
 
                         ```haskell
                         data Solfege = Do | Re | Mi | Fa | So | La | Ti
-                        entropy : Solfege -> Solfege -> Nat
+                        cost : Solfege -> Solfege -> Nat
                         ...
 
                         data Melody : (Solfege, Solfege) -> (Nat, Nat) -> Type where
-                          Pure   : x -> Melody (x, x) (0, 0)
+                          Pure  : x -> Melody (x, x) (0, 0)
 
-                          (>>=)  : Melody (w, x) (lower, upper) ->
-                                   (() -> Melody (y, z) (lower', upper')) ->
-                                   Melody (w, z) (entropy x y + lower + lower', entropy x y + upper + upper')
+                          (>>=) : Melody (w, x) (low, high) ->
+                                  (() -> Melody (y, z) (low2, high2)) ->
+                                  Melody (w, z) (cost x y + low + low2, cost x y + high + high2)
 
-                          Relax  : Melody (x, y) (lower + dl, upper) -> Melody entropy (x, y) (lower, upper + du)
+                          Relax : Melody (x, y) (low + dl, high) ->
+                                  Melody (x, y) (low, high + dh)
                         ```
                     </script>
                 </section>
